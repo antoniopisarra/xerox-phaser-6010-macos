@@ -17,7 +17,7 @@ These checks do not send print jobs. Test output files are under ignored build/.
 
 ## Release acceptance on the Mac
 
-The final 1.0.0 interface cannot be visually accepted through this automation environment: macOS denied GUI automation/application registration. It still needs a normal desktop launch and three real screenshots. The owner will supply them. Compilation and core tests cannot replace these checks:
+GUI automation was unavailable during development. On 19 October 2026 the owner supplied three real screenshots after installing 1.1.0: the English Printer, Status and toner, and Calibration pages. The captures show discovery of a compatible printer, Ready status, refreshed toner values and the calibration controls. They are preserved in docs/screenshots and linked from both READMEs. Italian layout and individual button/printing workflows still need separate acceptance; screenshots do not establish these behaviors. Compilation and core tests cannot replace these checks:
 
 1. Install the downloaded package on a clean ARM64 Mac; observe actual Gatekeeper behavior. Open the application from Applications, test each page at normal display scaling.
 2. Discover the printer, select it, try manual IP, add/update the queue, cancel administrator authorization and retry.
@@ -30,6 +30,6 @@ Other Apple Silicon chips, Intel, USB, AirPrint and future macOS releases have n
 
 ## 1.1.0 additions
 
-Language selection parsing and Italian/English UI strings are covered by core tests; `python3 tests/localization.py` checks translation coverage for every static UI localization key. Installer package choices select exactly one script-only language component; the selected language is stored in the root-owned driver directory and used at application launch. A Mac GUI installation is still required to verify the customization page and both language layouts: the local installer inspection tool could not locate the target volume in this execution environment. System print/security dialogs follow macOS's own language.
+Language selection parsing and Italian/English UI strings are covered by core tests; `python3 tests/localization.py` checks translation coverage for every static UI localization key. Installer package choices select exactly one script-only language component; the selected language is stored in the root-owned driver directory and used at application launch. The owner's post-installation screenshots confirm the English layouts of all three pages. The installer customization page and Italian layout are not covered by those captures; the local installer inspection tool could not locate the target volume in this execution environment. System print/security dialogs follow macOS's own language.
 
 The AirPrint source prototype passed local IPP attribute queries and dry-run PDF/URF conversion without printing. It is not activated by the installer. See airprint/README.md for remaining physical iOS and service lifecycle work.

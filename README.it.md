@@ -30,7 +30,23 @@ La scelta della lingua vale per tutti gli utenti del Mac e si applica al success
 - **Stato e toner:** stato della stampante e livelli ciano, magenta, giallo e nero; aggiornamento manuale e automatico ogni 30 secondi mentre la pagina è visibile; pagina web della stampante, impostazioni di condivisione ed esportazione della diagnostica.
 - **Calibrazione:** foglio di centratura italiano/inglese, pulsante per stamparlo, spostamento orizzontale/verticale, correzione separata di larghezza/altezza e calcolo dalle misure rilevate sul foglio.
 
-Le schermate reali dell'app saranno aggiunte dopo l'acquisizione sul Mac di prova. [Indicazioni per le tre immagini](docs/screenshots/README.md).
+### Schermate dell'app
+
+Immagini reali della versione 1.1.0 installata sul Mac di prova, con interfaccia inglese. L'utility è disponibile anche in italiano.
+
+**Stampante — ricerca in rete e configurazione IP**
+
+![Stampante rilevata sulla rete locale](docs/screenshots/printer.png)
+
+**Stato e toner — lettura aggiornata dalla stampante**
+
+![Stato pronta e livelli dei quattro toner](docs/screenshots/status-toner.png)
+
+**Calibrazione — misure, correzioni e stampa del foglio**
+
+![Calibrazione con selezione della lingua del PDF](docs/screenshots/calibration.png)
+
+I valori di IP, toner e calibrazione mostrati sono quelli del Mac di prova, non impostazioni da copiare. [Dettagli delle immagini](docs/screenshots/README.md).
 
 I livelli dei toner sono stime comunicate dalla stampante tramite SNMP: i valori sconosciuti restano non disponibili. Ricerca e stato richiedono UDP 161; la stampa usa TCP 9100. Se SNMP o la ricerca broadcast sono bloccati, inserisci l'IP manualmente; l'assenza dei livelli toner non impedisce la stampa. Lo stato usa l'utility `snmpget` fornita da macOS: se manca, l'app segnala lo stato non disponibile.
 
