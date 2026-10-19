@@ -47,6 +47,12 @@ Real captures of version 1.1.0 installed on the test Mac, using the English inte
 
 ![Calibration controls with PDF language selection](docs/screenshots/calibration.png)
 
+**AirPrint — sharing with iPhone and iPad**
+
+![AirPrint enable control and iPhone instructions, before version 1.3.0](docs/screenshots/airprint.png)
+
+This additional capture predates 1.3.0: its instructions to keep the app open and its pending iOS test message are historical. In 1.3.0 the background service allows closing the app; physical iPhone printing was confirmed with 1.2.1.
+
 The IP address, toner levels and calibration values belong to the test setup; they are not settings to copy. See [image details](docs/screenshots/README.md).
 
 Toner readings come from the printer's SNMP interface and are estimates reported by its firmware. Unknown values remain unavailable. Discovery/status need UDP 161; printing uses TCP 9100. If SNMP or broadcast discovery is disabled, use a manual IP; unavailable toner reporting does not prevent printing. Status requires the macOS `snmpget` utility; the application reports an unavailable status if it is missing.
