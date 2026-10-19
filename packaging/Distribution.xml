@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+ <title>Driver Xerox Phaser 6010N per Mac</title>
+ <welcome file="Welcome.html"/>
+ <readme file="ReadMe.html"/>
+ <options customize="never" require-scripts="false" hostArchitectures="arm64"/>
+ <volume-check><allowed-os-versions><os-version min="26.0"/></allowed-os-versions></volume-check>
+ <domains enable_localSystem="true" enable_currentUserHome="false" enable_anywhere="false"/>
+ <choices-outline><line choice="driver"/></choices-outline>
+ <choice id="driver" title="Driver e utility Xerox Phaser 6010N" visible="false"><pkg-ref id="org.community.phaser6010"/></choice>
+ <pkg-ref id="org.community.phaser6010" version="1.0.0" onConclusion="none">Phaser6010-component.pkg</pkg-ref>
+</installer-gui-script>

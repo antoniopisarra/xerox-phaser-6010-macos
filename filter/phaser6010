@@ -1,0 +1,56 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-2.0-or-later
+set -euo pipefail
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export LC_NUMERIC=C
+unset GS_OPTIONS GS_LIB GS_FONTPATH GS_DEVICE GS_COLOR_PATTERNS
+ROOT='/Library/Printers/Phaser6010'
+# Override only for isolated developer tests; package always uses fixed installation.
+if [[ ${PHASER_DEVELOPMENT:-} == 1 ]]; then ROOT=${PHASER_ROOT:?}; fi
+[[ $# == 5 || $# == 6 ]] || { echo 'ERROR: Invalid CUPS arguments' >&2; exit 1; }
+copies=$4
+[[ $copies =~ ^[0-9]+$ && ${#copies} -le 3 ]] && ((copies >= 1 && copies <= 999)) || exit 1
+paper=a4; code=2; dim=4960x7016; device=pamcmyk32; center_x=297.6; center_y=420.96
+# Bash 3.2 here-strings create /tmp/sh-thd.* even when CUPS provides TMPDIR.
+# Split fixed option tokens in memory; disable pathname expansion first.
+set -f
+for option in $5; do
+ case "$option" in
+ PageSize=A4|media=A4) paper=a4; code=2; dim=4960x7016; center_x=297.6; center_y=420.96;;
+ PageSize=Letter|media=Letter) paper=letter; code=0; dim=5100x6600; center_x=306; center_y=396;;
+ ColorModel=Gray|print-color-mode=monochrome) device=pgmraw;;
+ PageSize=*|media=*) echo "ERROR: Unsupported paper: $option" >&2; exit 1;;
+ sides=two-sided-*) echo 'ERROR: Duplex unsupported' >&2; exit 1;;
+ esac
+done
+# Settings are numeric data, never sourced as shell code. Migrate the old X offset.
+horizontal_mm=0; vertical_mm=0; scale_x=100; scale_y=100
+if [[ -f "$ROOT/horizontal-offset-mm" ]]; then
+ IFS= read -r horizontal_mm < "$ROOT/horizontal-offset-mm" || exit 1
+fi
+if [[ -f "$ROOT/calibration.conf" ]]; then
+ while IFS='=' read -r key value; do
+  case "$key" in
+   horizontal-mm) horizontal_mm=$value;; vertical-mm) vertical_mm=$value;;
+   scale-x-percent) scale_x=$value;; scale-y-percent) scale_y=$value;;
+  esac
+ done < "$ROOT/calibration.conf"
+fi
+for value in "$horizontal_mm" "$vertical_mm" "$scale_x" "$scale_y"; do
+ [[ $value =~ ^-?[0-9]+([.][0-9]{1,4})?$ && ${#value} -le 9 ]] || { echo 'ERROR: Invalid calibration value' >&2; exit 1; }
+done
+transform=( $(/usr/bin/awk -v x="$horizontal_mm" -v y="$vertical_mm" -v sx="$scale_x" -v sy="$scale_y" 'BEGIN {if (x < -20 || x > 20 || y < -20 || y > 20 || sx < 50 || sx > 150 || sy < 50 || sy > 150) exit 1; printf "%.8f %.8f %.8f %.8f", x*72/25.4,-y*72/25.4,sx/100,sy/100}') )
+[[ ${#transform[@]} == 4 ]] || { echo 'ERROR: Calibration out of range' >&2; exit 1; }
+umask 077
+tmp=$(/usr/bin/mktemp -d "${TMPDIR:-/private/tmp}/phaser6010.XXXXXXXX")
+trap 'rm -rf "$tmp"' EXIT
+trap 'exit 1' HUP INT TERM
+if [[ $# == 6 ]]; then /bin/cat < "$6" > "$tmp/input"; else /bin/cat > "$tmp/input"; fi
+# Raster is staged before encoder: renderer failures never emit a partial job.
+"$ROOT/gs/bin/gs" -q -dSAFER -dBATCH -dNOPAUSE -dFIXEDMEDIA \
+ -I"$ROOT/gs/share/ghostscript/10.08.0/Resource/Init:$ROOT/gs/share/ghostscript/10.08.0/Resource/Font:$ROOT/gs/share/ghostscript/10.08.0/lib" \
+ -sICCProfilesDir="$ROOT/gs/share/ghostscript/10.08.0/iccprofiles/" \
+ -sPAPERSIZE="$paper" -g"$dim" -r600 -sDEVICE="$device" \
+ -sOutputFile="$tmp/raster" -c "<</PageOffset [${transform[0]} ${transform[1]}] /BeginPage {pop $center_x $center_y translate ${transform[2]} ${transform[3]} scale -$center_x -$center_y translate}>> setpagedevice" -f "$tmp/input" >&2
+"$ROOT/bin/foo2hbpl1" -z1 -m1 -p"$code" -n"$copies" -A -B < "$tmp/raster" > "$tmp/job"
+/bin/cat "$tmp/job"

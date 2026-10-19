@@ -1,0 +1,10 @@
+/build/
+/dist/
+/vendor/ghostscript/
+/vendor/corresponding-source/
+.DS_Store
+._*
+*.dSYM/
+*.p12
+*.p8
+*.key

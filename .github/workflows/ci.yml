@@ -1,0 +1,29 @@
+name: Build and verify
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  macos-arm64:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Require ARM64
+        run: test "$(uname -m)" = arm64
+      - name: Core tests
+        run: ./tests/core.sh
+      - name: Encoder memory regression
+        run: python3 tests/encoder-memory.py
+      - name: Fetch verified Ghostscript source
+        run: ./scripts/fetch-ghostscript.sh
+      - name: Build standalone Ghostscript
+        run: ./packaging/build-ghostscript.sh
+      - name: Conversion and PPD checks
+        run: GS_EXECUTABLE="$PWD/vendor/ghostscript/bin/gs" ./tests/smoke.sh
+      - name: Package
+        run: ./packaging/package.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: macos-arm64-package
+          path: dist/*.pkg
+          retention-days: 14

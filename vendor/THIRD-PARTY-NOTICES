@@ -1,0 +1,17 @@
+Ghostscript/GhostPDL 10.08.0, Artifex and contributors, AGPL-3.0-or-later.
+Official original source archive included in corresponding-source/.
+SHA256: 94943e3c4adb7115d132b3c28b913672f2e62e6a9d802f7e754e716b1634174a
+Source: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/tag/gs10080
+No source patches. See packaging/build-ghostscript.sh for configure/build recipe.
+
+Bundled third-party libraries built from that archive include freetype, jpeg,
+libpng, tiff, zlib, brotli, jbig2dec, openjpeg, lcms2mt, expat.
+JPEG XR source is present in the original archive under its own license;
+no JPEG XR symbols were found in the shipped gs executable.
+The complete license notices and original sources are in the included archive,
+including each library directory and LICENSE, doc/COPYING, Resource/CMap notices,
+Resource/Font notices and DroidSansFallback.NOTICE. No Homebrew binaries included.
+Apple system libraries libSystem and libiconv are provided by macOS.
+foo2hbpl1 encoder: GPL-2.0-or-later; authors preserved in src/foo2hbpl1.c.
+New project code: GPL-2.0-or-later; source and build scripts included.
+The GPL-2.0-or-later option allows use under GPLv3 where needed for AGPL compatibility.
