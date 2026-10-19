@@ -47,6 +47,12 @@ Immagini reali della versione 1.1.0 installata sul Mac di prova, con interfaccia
 
 ![Calibrazione con selezione della lingua del PDF](docs/screenshots/calibration.png)
 
+**AirPrint — condivisione con iPhone e iPad**
+
+![Attivazione AirPrint e istruzioni iPhone, prima della versione 1.3.0](docs/screenshots/airprint.png)
+
+Questa schermata precede la 1.3.0: l’obbligo di tenere aperta l’app e l’avviso sulla prova iOS sono storici. Nella 1.3.0 il servizio in background permette di chiudere l’app; la stampa fisica da iPhone è stata confermata con la 1.2.1.
+
 I valori di IP, toner e calibrazione mostrati sono quelli del Mac di prova, non impostazioni da copiare. [Dettagli delle immagini](docs/screenshots/README.md).
 
 I livelli dei toner sono stime comunicate dalla stampante tramite SNMP: i valori sconosciuti restano non disponibili. Ricerca e stato richiedono UDP 161; la stampa usa TCP 9100. Se SNMP o la ricerca broadcast sono bloccati, inserisci l'IP manualmente; l'assenza dei livelli toner non impedisce la stampa. Lo stato usa l'utility `snmpget` fornita da macOS: se manca, l'app segnala lo stato non disponibile.
