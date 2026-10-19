@@ -92,3 +92,69 @@ if let oldLanguage {
   UserDefaults.standard.removeObject(forKey: "interfaceLanguage")
 }
 print("PASS: installed language parsing, locale fallback, English/Italian UI translation.")
+
+precondition(
+  !isDirectPrinterService(type: "_ipp._tcp.", port: 8631, identity: "Xerox Phaser 6010N via Mac"))
+precondition(
+  !isDirectPrinterService(type: "_pdl-datastream._tcp.", port: 8631, identity: "Xerox Phaser 6010N")
+)
+precondition(
+  isDirectPrinterService(type: "_pdl-datastream._tcp.", port: 9100, identity: "Xerox Phaser 6010N"))
+precondition(
+  !isDirectPrinterService(type: "_pdl-datastream._tcp.", port: 9100, identity: "Another printer"))
+let ok = try SystemCommand.run("/bin/echo", ["bounded-output"])
+precondition(ok.status == 0 && ok.text == "bounded-output\n")
+let started = ProcessInfo.processInfo.systemUptime
+do {
+  _ = try SystemCommand.run("/bin/sh", ["-c", "trap '' TERM; while :; do :; done"], timeout: 0.1)
+  fatalError("Unbounded command accepted")
+} catch {}
+precondition(ProcessInfo.processInfo.systemUptime - started < 2)
+do {
+  _ = try SystemCommand.run("/usr/bin/yes", [], timeout: 3)
+  fatalError("Unbounded output accepted")
+} catch {}
+print(
+  "PASS: direct-hardware discovery; bounded command output; hard timeout for a TERM-resistant child."
+)
+
+let hostHome = URL(fileURLWithPath: "build/tests/agent-home", isDirectory: true)
+try? FileManager.default.removeItem(at: hostHome)
+var agentLoaded = false
+var agentCalls: [[String]] = []
+let agentRunner: (String, [String]) throws -> CommandResult = { path, args in
+  precondition(path == "/bin/launchctl")
+  agentCalls.append(args)
+  switch args.first {
+  case "print":
+    return CommandResult(
+      status: agentLoaded ? 0 : 113, text: agentLoaded ? "state = running\n" : "")
+  case "bootstrap": agentLoaded = true
+  case "bootout": agentLoaded = false
+  default: break
+  }
+  return CommandResult(status: 0, text: "")
+}
+let agent = AirPrintHost(home: hostHome, root: "/Library/Printers/Phaser6010", command: agentRunner)
+try agent.start()
+precondition(agentLoaded && FileManager.default.fileExists(atPath: agent.plist.path))
+let plistData = try Data(contentsOf: agent.plist)
+let manifest =
+  try PropertyListSerialization.propertyList(from: plistData, options: [], format: nil)
+  as! [String: Any]
+let arguments = manifest["ProgramArguments"] as! [String]
+precondition(arguments.first == "/usr/bin/caffeinate" && arguments[1] == "-i")
+precondition(!arguments.prefix(2).contains("-d") && !arguments.prefix(2).contains("-u"))
+precondition(manifest["RunAtLoad"] as? Bool == true && manifest["KeepAlive"] as? Bool == true)
+let attrs = try FileManager.default.attributesOfItem(atPath: agent.plist.path)
+precondition((attrs[.posixPermissions] as! NSNumber).intValue == 0o600)
+let anotherWindow = AirPrintHost(home: hostHome, command: agentRunner)
+let recovered = try anotherWindow.status()
+precondition(recovered.running)
+try anotherWindow.stop()
+precondition(!agentLoaded && !FileManager.default.fileExists(atPath: agent.plist.path))
+try anotherWindow.stop()  // disabling an already stopped service is safe
+try? FileManager.default.removeItem(at: hostHome)
+print(
+  "PASS: background launch agent, login restart, display sleep allowed, stop and private plist permissions; no live agent changed."
+)

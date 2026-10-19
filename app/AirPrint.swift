@@ -9,6 +9,9 @@ final class AirPrintBridge {
   private var awake: Process?
   private var spool: URL?
   private var generation = 0
+  private var monitor: Timer?
+  private var checkingHost = false
+  private lazy var host = AirPrintHost(root: runtimeRoot)
   private let port: Int
   private let runtimeRoot: String
   private let dryRunDirectory: URL?
@@ -41,6 +44,22 @@ final class AirPrintBridge {
       guard queue.status == 0, ppd?.contains("Xerox Phaser 6010N Community") == true else {
         throw CalibrationError(L("Configura prima la coda Phaser6010 nella sezione Stampante."))
       }
+    }
+    if dryRunDirectory == nil {
+      guard FileManager.default.isExecutableFile(atPath: runtimeRoot + "/airprint/serve.sh") else {
+        throw CalibrationError(L("Installa il pacchetto aggiornato per usare AirPrint."))
+      }
+      try host.start()
+      change(.starting)
+      if monitor == nil {
+        monitor = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in
+          self?.refresh()
+        }
+      }
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+        self?.refresh(force: true)
+      }
+      return
     }
     let folder = FileManager.default.temporaryDirectory.appendingPathComponent(
       "phaser-airprint-" + UUID().uuidString, isDirectory: true)
@@ -110,7 +129,44 @@ final class AirPrintBridge {
       }
     }
   }
+  func refresh(force: Bool = false) {
+    guard dryRunDirectory == nil, !checkingHost, state != .stopping else { return }
+    if state == .starting && !force { return }
+    if monitor == nil {
+      monitor = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in
+        self?.refresh(force: true)
+      }
+    }
+    checkingHost = true
+    let token = generation
+    DispatchQueue.global(qos: .utility).async { [weak self] in
+      guard let self else { return }
+      let status = try? self.host.status()
+      let ready =
+        status?.running == true
+        ? try? SystemCommand.run(
+          "/usr/bin/ipptool",
+          [
+            "-q", "-T", "2", "ipp://localhost:8631/ipp/print",
+            "/usr/share/cups/ipptool/get-printer-attributes.test",
+          ], timeout: 3) : nil
+      DispatchQueue.main.async {
+        self.checkingHost = false
+        guard self.generation == token, self.state != .stopping else { return }
+        self.change(ready?.status == 0 ? .running : status?.loaded == true ? .failed : .stopped)
+      }
+    }
+  }
   func stop() {
+    if dryRunDirectory == nil {
+      generation += 1
+      change(.stopping)
+      do {
+        try host.stop()
+        change(.stopped)
+      } catch { change(.failed) }
+      return
+    }
     guard let p = server else {
       change(.stopped)
       return
@@ -118,7 +174,19 @@ final class AirPrintBridge {
     change(.stopping)
     if p.isRunning { p.terminate() }
   }
+  func stopForRemoval() throws {
+    if dryRunDirectory == nil {
+      generation += 1
+      try host.stop()
+      change(.stopped)
+    } else {
+      stop()
+    }
+  }
   func shutdown() {
+    monitor?.invalidate()
+    monitor = nil
+    if dryRunDirectory == nil { return }  // Closing the GUI must preserve the launch agent.
     stop()
     if awake?.isRunning == true { awake?.terminate() }
     // No persistent service is installed; the app owns the child process.

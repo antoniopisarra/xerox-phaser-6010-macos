@@ -16,4 +16,6 @@ Ghostscript/GhostPDL is a separate upstream dependency from [Artifex](https://gi
 
 ## Private AirPrint IPP server
 
-Apple CUPS commit `a8968fc4257322b1e4e191c4bccedea98d7b053e`: https://github.com/apple/cups/tree/a8968fc4257322b1e4e191c4bccedea98d7b053e. Only the unmodified tools/ippeveprinter.c application is compiled against the native macOS libcups. Apache-2.0 and upstream exceptions/notices are retained in vendor/LICENSE-CUPS and vendor/NOTICE-CUPS. Full archive cups-a8968fc.tar.gz (SHA-256 `72cc272eb95dac3b8f5914ce727e9ee454a2aa10a56ca954cfc66899eb236624`) is included in binary/source distributions. No existing Apple executable is copied or modified.
+Apple CUPS commit `a8968fc4257322b1e4e191c4bccedea98d7b053e`: https://github.com/apple/cups/tree/a8968fc4257322b1e4e191c4bccedea98d7b053e. Only the tools/ippeveprinter.c with the tracked bridge policy patch application is compiled against the native macOS libcups. Apache-2.0 and upstream exceptions/notices are retained in vendor/LICENSE-CUPS and vendor/NOTICE-CUPS. Full archive cups-a8968fc.tar.gz (SHA-256 `72cc272eb95dac3b8f5914ce727e9ee454a2aa10a56ca954cfc66899eb236624`) is included in binary/source distributions. No existing Apple executable is copied or modified.
+
+Version 1.3.0 applies packaging/ipp-server.patch: URI fetch operations and sample HTML job pages are disabled; IPP history redacts user-provided names; sample consumable levels are omitted. Upstream source archives and notices remain unchanged and the patch/build recipe are included.

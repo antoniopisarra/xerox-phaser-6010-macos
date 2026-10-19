@@ -10,12 +10,12 @@ La Xerox Phaser 6010N è una stampante ancora valida, ma il suo software origina
 
 Il progetto è destinato ai Mac Apple Silicon delle famiglie **M1, M2, M3, M4, M5 e M6**, con **macOS 26 o successivo**. È il requisito dell'architettura ARM64: non significa che ogni modello o futura versione di macOS sia stato provato fisicamente. La stampa è stata verificata su un Mac Apple Silicon con versione del sistema riportata come macOS 26.6.2. La [pagina dei test](docs/TESTING.md) distingue le verifiche eseguite da quelle ancora necessarie. Per il supporto del produttore consulta i [download ufficiali Xerox](https://www.support.xerox.com/en-us/product/phaser-6010/downloads).
 
-**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel o altri modelli di stampante. Il ponte AirPrint opzionale è pronto per la prova reale da iPhone/iPad, descritta sotto.
+**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel o altri modelli di stampante. La stampa fisica da iPhone è confermata con la 1.2.1; la nuova gestione in background della 1.3.0 richiede la verifica dopo installazione, descritta sotto.
 
 ## Installazione e prima stampa
 
 1. Collega la stampante al router tramite cavo Ethernet e accendila.
-2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.2.1.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
+2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.3.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
 3. Apri **Configura Xerox Phaser 6010N** dalla cartella **Applicazioni**.
 4. Consenti l'accesso alla rete locale se macOS lo richiede. Seleziona la stampante trovata oppure inserisci il suo indirizzo IPv4, quindi aggiungi/aggiorna la stampante. macOS chiederà l'autorizzazione di un amministratore per configurare la coda.
 5. Dal normale pannello di stampa scegli **Xerox Phaser 6010N**. Sono previsti A4 o Letter, carta normale, colori o scala di grigi, solo fronte.
@@ -63,7 +63,7 @@ PDF: [Italiano](app/Resources/Centratura-it.pdf) · [English](app/Resources/Cali
 
 Installa il nuovo pacchetto sopra quello precedente: i componenti vengono aggiornati e la calibrazione locale conservata. **Disinstalla…** nell'app rimuove applicazione, driver, calibrazione e coda `Phaser6010`, inclusi i suoi lavori in attesa. Sono richieste conferma e autorizzazione amministratore.
 
-Il pulsante di condivisione apre le impostazioni di macOS. La condivisione va abilitata dall'utente e richiede che il Mac rimanga acceso. Per il ponte AirPrint apri **AirPrint → Attiva AirPrint**. Su iPhone/iPad scegli **Condividi → Stampa → Seleziona stampante → Xerox Phaser 6010N via Mac**. Tieni aperta l’app e il Mac acceso sulla stessa rete locale. Il servizio impedisce lo stop per inattività; stop manuale, chiusura del coperchio o spegnimento lo interrompono. Chi può raggiungere il servizio può inviare lavori: usa una rete fidata. Non si attiva automaticamente durante installazione o avvio. I test locali IPP/PDF/Apple Raster sono passati. Dopo aver rimosso il vecchio pacchetto e installato la 1.2.1, l’autore ha confermato che la stampa fisica dall’iPhone funziona perfettamente. Altre versioni iOS, opzioni di stampa e client Mac AirPrint richiedono prove separate. [Dettagli](docs/SHARING.md).
+Il pulsante di condivisione apre le impostazioni di macOS. La condivisione va abilitata dall'utente e richiede che il Mac rimanga acceso. Per il ponte AirPrint apri **AirPrint → Attiva AirPrint**. Su iPhone/iPad scegli **Condividi → Stampa → Seleziona stampante → Xerox Phaser 6010N via Mac**. Tieni il Mac acceso, con un utente collegato, sulla stessa rete locale. AirPrint resta attivo chiudendo l’utility e si riavvia all’accesso di quell’utente. Usa Disattiva AirPrint per fermarlo. Lo schermo può spegnersi. Il servizio impedisce lo stop per inattività; stop manuale, chiusura del coperchio o spegnimento lo interrompono. Chi può raggiungere il servizio può inviare lavori: usa una rete fidata. L’installazione non abilita la condivisione. Dopo l’attivazione, un servizio per l’utente la riavvia all’accesso finché non la disattivi. I test locali IPP/PDF/Apple Raster sono passati. Dopo aver rimosso il vecchio pacchetto e installato la 1.2.1, l’autore ha confermato che la stampa fisica dall’iPhone funziona perfettamente. Altre versioni iOS, opzioni di stampa e client Mac AirPrint richiedono prove separate. [Dettagli](docs/SHARING.md).
 
 ## Cosa è stato realizzato
 
@@ -104,3 +104,7 @@ Progetto indipendente, non affiliato né approvato da Xerox. Xerox e Phaser sono
 - Font e librerie conservano le proprie licenze: [inventario](vendor/THIRD-PARTY-NOTICES) e archivio completo. Dopo l'installazione `/Library/Printers/Phaser6010/licenses` contiene sorgenti, istruzioni di compilazione e testi delle licenze.
 
 Grazie agli autori di foo2hbpl1/foo2zjs, ai collaboratori Ghostscript e a chi ha provato la stampante reale. La manutenzione è volontaria. Nelle segnalazioni indica versione macOS, famiglia del chip, collegamento e rapporto diagnostico dell'app. Evita documenti personali e log di stampa non ripuliti.
+
+## Revisione dettagliata del codice
+
+La [revisione del 19 ottobre](docs/REVIEW-2026-10-19.md) documenta difetti confermati, correzioni, misure e verifiche ancora necessarie. Il servizio in background della 1.3.0 e i nuovi percorsi di carta/copie richiedono una prova fisica dopo l’installazione.

@@ -1,3 +1,4 @@
+import Darwin
 // SPDX-License-Identifier: GPL-2.0-or-later
 import Foundation
 
@@ -24,12 +25,45 @@ enum SystemCommand {
     process.standardOutput = pipe
     process.standardError = pipe
     try process.run()
-    let watchdog = DispatchWorkItem { if process.isRunning { process.terminate() } }
-    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout, execute: watchdog)
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let fd = pipe.fileHandleForReading.fileDescriptor
+    let flags = fcntl(fd, F_GETFL)
+    _ = fcntl(fd, F_SETFL, flags | O_NONBLOCK)
+    let limit = 262144
+    var data = Data()
+    var buffer = [UInt8](repeating: 0, count: 8192)
+    let deadline = ProcessInfo.processInfo.systemUptime + max(0.05, timeout)
+    var failure: String?
+    var stopAt: TimeInterval?
+    while true {
+      let now = ProcessInfo.processInfo.systemUptime
+      if failure == nil && now >= deadline {
+        failure = L("Tempo di attesa del comando scaduto.")
+      }
+      if failure != nil && stopAt == nil {
+        if process.isRunning { process.terminate() }
+        stopAt = now + 0.25
+      }
+      if let stopAt, now >= stopAt, process.isRunning {
+        _ = Darwin.kill(process.processIdentifier, SIGKILL)
+      }
+      if failure != nil && !process.isRunning { break }
+      let count = Darwin.read(fd, &buffer, buffer.count)
+      if count > 0 {
+        if data.count + count <= limit && failure == nil {
+          data.append(contentsOf: buffer.prefix(count))
+        } else if failure == nil {
+          failure = L("Risposta troppo grande.")
+        }
+      } else if !process.isRunning {
+        break  // Do not wait forever for a descendant holding the pipe open.
+      } else {
+        var descriptor = pollfd(fd: fd, events: Int16(POLLIN | POLLHUP), revents: 0)
+        if count == 0 { usleep(10_000) } else { _ = poll(&descriptor, 1, 20) }
+      }
+    }
     process.waitUntilExit()
-    watchdog.cancel()
-    guard data.count <= 262144 else { throw CalibrationError(L("Risposta troppo grande.")) }
+    if let failure { throw CalibrationError(failure) }
+
     return CommandResult(
       status: process.terminationStatus, text: String(decoding: data, as: UTF8.self))
   }

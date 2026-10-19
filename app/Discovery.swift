@@ -22,6 +22,11 @@ func isPhaser6010(_ text: String) -> Bool {
   let t = text.lowercased()
   return t.contains("6010") && (t.contains("xerox") || t.contains("phaser"))
 }
+// Only a raw printer service can be used directly as a socket://IP:9100 queue.
+// IPP/LPD advertisements may belong to a Mac bridge rather than the hardware.
+func isDirectPrinterService(type: String, port: Int, identity: String) -> Bool {
+  type == "_pdl-datastream._tcp." && port == 9100 && isPhaser6010(identity)
+}
 // Minimal BER codec: response identity is taken only from SNMP octet strings.
 enum SNMPIdentity {
   static func tlv(_ tag: UInt8, _ data: [UInt8]) -> [UInt8] {
@@ -145,7 +150,7 @@ final class PrinterDiscovery: NSObject, NetServiceBrowserDelegate, NetServiceDel
     printers.removeAll()
     searching = true
     publish()
-    for type in ["_pdl-datastream._tcp.", "_printer._tcp.", "_ipp._tcp.", "_ipps._tcp."] {
+    for type in ["_pdl-datastream._tcp."] {
       let b = NetServiceBrowser()
       b.delegate = self
       browsers.append(b)
@@ -162,6 +167,7 @@ final class PrinterDiscovery: NSObject, NetServiceBrowserDelegate, NetServiceDel
     }
   }
   func stop() {
+    generation += 1
     timer?.invalidate()
     browsers.forEach { $0.stop() }
     services.forEach { $0.stop() }
@@ -177,6 +183,7 @@ final class PrinterDiscovery: NSObject, NetServiceBrowserDelegate, NetServiceDel
   func netServiceBrowser(
     _ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool
   ) {
+    guard browsers.contains(where: { $0 === browser }) else { return }
     services.append(service)
     service.delegate = self
     service.resolve(withTimeout: 4)
@@ -188,7 +195,9 @@ final class PrinterDiscovery: NSObject, NetServiceBrowserDelegate, NetServiceDel
     let txt = sender.txtRecordData().map { NetService.dictionary(fromTXTRecord: $0) } ?? [:]
     let identity = ([sender.name] + txt.values.compactMap { String(data: $0, encoding: .utf8) })
       .joined(separator: " ")
-    guard isPhaser6010(identity) else { return }
+    guard services.contains(where: { $0 === sender }),
+      isDirectPrinterService(type: sender.type, port: sender.port, identity: identity)
+    else { return }
     for data in sender.addresses ?? [] {
       guard data.count >= MemoryLayout<sockaddr_in>.size else { continue }
       let ip: String? = data.withUnsafeBytes { raw in

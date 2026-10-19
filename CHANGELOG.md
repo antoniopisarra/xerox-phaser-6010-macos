@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0
+
+- AirPrint now runs through an opt-in per-user LaunchAgent: survives closing the utility and restarts at login; Disable removes the agent. Prevents idle system sleep while allowing display sleep.
+- Disabled server-side Print-URI/Send-URI, sample HTML job pages and fictitious supplies; redacted job titles/users in IPP responses.
+- Excluded Mac AirPrint bridges from direct-hardware discovery; invalidated stale discovery callbacks on stop.
+- Bounded command output during reading and force-stopped commands that ignore the timeout.
+- Rejected malformed, oversized and truncated encoder raster input; validated complete Apple/PWG Raster before conversion.
+- Fixed raster copy forwarding, media collections independent of key order, name-only paper selection and monochrome queue options.
+- Cached the installed interface language and cleared stale toner data for invalid selections.
+- Added targeted regressions and detailed review/benchmark results. Background registration and new physical print paths require Mac acceptance; local tests send no jobs to the Xerox.
+
 ## 1.2.1
 
 - Fixed A4 IPP negotiation: PPD dimensions now map exactly to 21000 × 29700 hundredths of a millimeter instead of rounded point dimensions rejected by standard media-col requests.

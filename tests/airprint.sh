@@ -12,11 +12,12 @@ xcrun clang -Wno-deprecated-declarations tests/airprint-raster.c -lcups -o build
 build/airprint-tests/raster > build/airprint-tests/test.urf
 CONTENT_TYPE=image/urf ./airprint/print-job.sh build/airprint-tests/test.urf
 count=$(find "$out" -type f | wc -l | tr -d ' ')
-[[ $count == 2 ]]
+[[ $count == 4 ]]
 for f in "$out"/*; do
+ [[ $f == *.options ]] && continue
  [[ $(head -c 4 "$f") == '%!PS' ]]
  vendor/ghostscript/bin/gs -q -dBATCH -dNOPAUSE -sDEVICE=nullpage "$f"
 done
 if CONTENT_TYPE=image/urf ./airprint/print-job.sh /dev/null; then exit 1; fi
-[[ $(find "$out" -type f | wc -l | tr -d ' ') == 2 ]]
+[[ $(find "$out" -type f | wc -l | tr -d ' ') == 4 ]]
 echo 'PASS: PDF and Apple Raster convert to valid PostScript; invalid raster rejected; no queue submission.'

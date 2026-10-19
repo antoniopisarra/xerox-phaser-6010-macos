@@ -20,14 +20,14 @@ root=$(mktemp -d /private/tmp/phaser6010-payload.XXXXXXXX)
 trap 'rm -rf "$root"' EXIT
 dest="$root/Library/Printers/Phaser6010"
 mkdir -p "$dest/bin" "$dest/filter" "$dest/licenses" "$root/Applications"
-cp build/bin/foo2hbpl1 build/bin/phaser-ipp-server "$dest/bin/"
+cp build/bin/foo2hbpl1 build/bin/phaser-ipp-server build/bin/phaser-check-raster "$dest/bin/"
 # Production filter has no development override.
 sed '/^if \[\[ ${PHASER_DEVELOPMENT/d' filter/phaser6010 > "$dest/filter/phaser6010"
 chmod 755 "$dest/filter/phaser6010"
 cp packaging/uninstall.sh "$dest/"
 cp packaging/Phaser6010.ppd "$dest/"
 mkdir -p "$dest/airprint"
-cp airprint/print-job.sh "$dest/airprint/"
+cp airprint/print-job.sh airprint/serve.sh "$dest/airprint/"
 cp -R vendor/ghostscript "$dest/gs"
 mkdir -p "$dest/licenses/project-source"
 cp -R src filter app airprint design packaging scripts tests docs README.md README.it.md LICENSE VERSION CHANGELOG.md "$dest/licenses/project-source/"
@@ -49,5 +49,5 @@ pkgbuild --component-plist build/components.plist --ownership recommended --root
 pkgbuild --nopayload --scripts packaging/language-default --identifier org.community.phaser6010.language.italian --version "$version" build/Phaser6010-Italian.pkg
 pkgbuild --nopayload --scripts packaging/language-english --identifier org.community.phaser6010.language.english --version "$version" build/Phaser6010-English.pkg
 
-sed "s/version=\"1.2.1\"/version=\"$version\"/" packaging/Distribution.xml > build/Distribution.xml
+sed "s/version=\"1.3.0\"/version=\"$version\"/" packaging/Distribution.xml > build/Distribution.xml
 productbuild --distribution build/Distribution.xml --resources packaging/resources --package-path build "dist/Driver-Xerox-Phaser-6010N-macOS-$version.pkg"

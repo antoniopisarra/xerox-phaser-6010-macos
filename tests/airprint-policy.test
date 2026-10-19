@@ -1,0 +1,35 @@
+{
+ NAME "Reject server-side URI fetch"
+ OPERATION Print-URI
+ GROUP operation-attributes-tag
+ ATTR charset attributes-charset utf-8
+ ATTR language attributes-natural-language en
+ ATTR uri printer-uri $uri
+ ATTR uri document-uri file:///tmp/phaser-policy-sentinel.pdf
+ ATTR mimeMediaType document-format application/pdf
+ STATUS server-error-operation-not-supported
+}
+{
+ NAME "Reject Send-URI"
+ OPERATION Send-URI
+ GROUP operation-attributes-tag
+ ATTR charset attributes-charset utf-8
+ ATTR language attributes-natural-language en
+ ATTR uri printer-uri $uri
+ ATTR integer job-id 1
+ ATTR uri document-uri http://127.0.0.1/not-fetched
+ ATTR boolean last-document true
+ STATUS server-error-operation-not-supported
+}
+{
+ NAME "Do not advertise fake supplies or URI fetch"
+ OPERATION Get-Printer-Attributes
+ GROUP operation-attributes-tag
+ ATTR charset attributes-charset utf-8
+ ATTR language attributes-natural-language en
+ ATTR uri printer-uri $uri
+ STATUS successful-ok
+ EXPECT !printer-supply
+ EXPECT !printer-supply-description
+ EXPECT !reference-uri-schemes-supported
+}

@@ -428,22 +428,23 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
     let instructions = label(
       guide,
       L(
-        "1. Collega iPhone e Mac alla stessa rete locale.\n2. Attiva AirPrint e lascia aperta questa app sul Mac.\n3. Su iPhone: Condividi → Stampa → Seleziona stampante.\n4. Scegli Xerox Phaser 6010N via Mac."
+        "1. Collega iPhone e Mac alla stessa rete locale.\n2. Attiva AirPrint; puoi poi chiudere questa app.\n3. Su iPhone: Condividi → Stampa → Seleziona stampante.\n4. Scegli Xerox Phaser 6010N via Mac."
       ), 20, 78, 680, 14)
     instructions.frame.size.height = 118
     let note = label(
       guide,
       L(
-        "Chi può raggiungere questo Mac in rete può inviare stampe. Usa una rete fidata. Il Mac deve restare acceso; chiudendo l’app la condivisione si arresta."
+        "Chi può raggiungere questo Mac in rete può inviare stampe. Usa una rete fidata. AirPrint resta attivo chiudendo l’app e si riavvia all’accesso al Mac. Per fermarlo premi Disattiva AirPrint."
       ), 20, 12, 680, 12, false, .secondaryLabelColor)
     note.frame.size.height = 60
     let acceptance = label(
       airPrintPage,
       L(
-        "Da verificare con il tuo iPhone: i test locali PDF e Apple Raster sono passati, ma la stampa reale da iOS richiede ancora una prova."
+        "Stampa da iPhone verificata. Il Mac deve restare acceso e con un utente collegato; i lavori già inoltrati si gestiscono nella coda macOS."
       ), 29, 53, 710, 12, false, .secondaryLabelColor)
     acceptance.frame.size.height = 65
     airPrintBridge.onChange = { [weak self] _ in self?.updateAirPrint() }
+    airPrintBridge.refresh()
     updateAirPrint()
   }
   @objc func showAirPrint() { selectPage(3) }
@@ -477,6 +478,12 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
   @objc func refreshStatus() {
     guard !refreshing else { return }
     guard let address = normalizedIPv4(ip.stringValue) else {
+      snapshot = nil
+      lastUpdate.stringValue = ""
+      for i in 0..<tonerBars.count {
+        tonerBars[i].percentage = nil
+        tonerLabels[i].stringValue = "—"
+      }
       printerState.stringValue = L("Seleziona una stampante")
       statusDetail.stringValue =
         L("Apri Stampante e seleziona la Xerox oppure inserisci il suo indirizzo IP.")
@@ -751,7 +758,10 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
       alert(L("Il driver non risulta installato."))
       return
     }
-    airPrintBridge.shutdown()
+    do { try airPrintBridge.stopForRemoval() } catch {
+      alert(error.localizedDescription)
+      return
+    }
     if let error = authorize("/bin/bash /Library/Printers/Phaser6010/uninstall.sh") {
       alert(error)
       return

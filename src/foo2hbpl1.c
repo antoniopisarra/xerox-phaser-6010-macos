@@ -48,6 +48,8 @@ static const char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/08/23 12:00:00 joe Ex
 
 #define _FILE_OFFSET_BITS 64
 #include <time.h>
+#include <limits.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -769,7 +771,7 @@ psize:
 	    {
 		for (col = 12; col < margin/8; col++)
 		    blank[row*(width/8)+col] = -1;
-		blank[row*(width/8)+col] = -2 << (~margin & 7);
+		blank[row*(width/8)+col] = 0xfeu << (~margin & 7);
 		break;
 	    }
     }
@@ -889,16 +891,33 @@ getint(Job *job, FILE *fp)
     }
     if (!isdigit(c)) return -1;
     for (ret = c-'0'; isdigit(c = fgetc(fp)); )
-	ret = ret*10 + c-'0';
+    {
+        if (ret > (INT_MAX - (c-'0')) / 10) return -1;
+        ret = ret*10 + c-'0';
+    }
     if (c < 0) return -1;
     debug(job, 3, "  getint(%d)\n", ret);
     return ret;
+}
+
+/* PAM integers must not overflow or silently accept suffixes. */
+static int
+pam_integer(const char *text)
+{
+    char *end;
+    long value;
+    errno = 0;
+    value = strtol(text, &end, 10);
+    if (errno || end == text || value < 0 || value > INT_MAX) return -1;
+    while (isspace((unsigned char)*end)) end++;
+    return *end ? -1 : (int)value;
 }
 
 void
 do_file(Job *job, FILE *fp)
 {
     int type, iwide, ihigh, ideep, imax, ibyte;
+    int pages_seen = 0;
     int wide, deep, byte, row, col, i, k;
     int lcl, lct, lcr, lcb;
     char tupl[128], line[128];
@@ -914,8 +933,10 @@ do_file(Job *job, FILE *fp)
 
     while ((type = fgetc(fp)) != EOF)
     {
-	type = ((type - 'P') << 8) | fgetc(fp);
-	tupl[0] = iwide = ihigh = ideep = deep = imax = ibyte = -1;
+        if (type != 'P') goto fail;
+        type = fgetc(fp);
+        tupl[0] = '\0';
+        iwide = ihigh = ideep = deep = imax = -1;
 	switch (type)
 	{
 	case '4':
@@ -935,15 +956,15 @@ six:	    iwide = getint(job, fp);
 	    {
 		if (!fgets(line, sizeof(line), fp)) goto fail;
 		if (!strncmp(line, "WIDTH ",6))
-		    iwide = atoi(line + 6);
+		    iwide = pam_integer(line + 6);
 		if (!strncmp(line, "HEIGHT ",7))
-		    ihigh = atoi(line + 7);
+		    ihigh = pam_integer(line + 7);
 		if (!strncmp(line, "DEPTH ",6))
-		    deep = ideep = atoi(line + 6);
+		    deep = ideep = pam_integer(line + 6);
 		if (!strncmp(line, "MAXVAL ",7))
-		    imax = atoi(line + 7);
+		    imax = pam_integer(line + 7);
 		if (!strncmp(line, "TUPLTYPE ",9))
-		    strncpy(tupl, line + 9, sizeof(line)-9-1);
+		    snprintf(tupl, sizeof(tupl), "%s", line + 9);
 	    } while (strcmp(line, "ENDHDR\n"));
 	    if (ideep != 4 || strcmp(tupl, "CMYK\n")) goto fail;
 	    break;
@@ -952,7 +973,8 @@ six:	    iwide = getint(job, fp);
 	}
 	debug(job, 2, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
 			 iwide, ihigh, imax, ideep);
-	if (iwide <= 0 || ihigh <= 0 || imax != 255) goto fail;
+	/* Bound allocation and predictor arithmetic for the 600 dpi pipeline. */
+        if (iwide < 128 || iwide > 6000 || ihigh <= 0 || ihigh > 10000 || imax != 255) goto fail;
 	wide = -(-iwide & -8);
         if (ideep)
 	    ibyte = iwide * ideep;
@@ -991,6 +1013,7 @@ six:	    iwide = getint(job, fp);
 	for (row = 1; row <= ihigh; row++)
 	{
 	    i = fread(job->image, ibyte, 1, fp);
+            if (i != 1) error(job, 1, "Truncated raster data\n");
 	    if (row > lct && row <= lcb)
 	    {
 		sp = job->image + lcl*ideep;
@@ -1050,13 +1073,15 @@ six:	    iwide = getint(job, fp);
 	if (job->SaveToner)
 	    save_toner(job, deep > 1);
 	encode_page(job, deep > 1, iwide, ihigh);
+        pages_seen++;
 	free(image);
 	job->image = image = NULL;
     }
+    if (!pages_seen) error(job, 1, "No raster pages\n");
     debug(job, 1, "End do_file()\n");
     return;
 fail:
-    fprintf(stderr, "Not an acceptable PBM, PPM or PAM file!!!\n");
+    error(job, 1, "Not an acceptable PBM, PPM or PAM file\n");
 }
 
 int
@@ -1202,5 +1227,6 @@ main(int argc, char *argv[])
     }
     if (job.pagenum)
 	end_doc(&job, 1);
+    if (fflush(stdout) == EOF || ferror(stdout)) return 1;
     return 0;
 }

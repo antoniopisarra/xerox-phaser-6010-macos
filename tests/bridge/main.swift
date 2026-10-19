@@ -19,6 +19,9 @@ func waitFor(_ state: AirPrintBridge.State) {
 }
 try bridge.start()
 waitFor(.running)
+let policy = try SystemCommand.run(
+  "/usr/bin/ipptool", ["-q", "ipp://localhost:8633/ipp/print", "tests/airprint-policy.test"])
+precondition(policy.status == 0)
 let a4 = try SystemCommand.run(
   "/usr/bin/ipptool", ["-q", "ipp://localhost:8633/ipp/print", "tests/airprint-validate-a4.test"])
 precondition(a4.status == 0)
@@ -44,6 +47,10 @@ while (try FileManager.default.contentsOfDirectory(atPath: output.path)).isEmpty
 }
 let files = try FileManager.default.contentsOfDirectory(atPath: output.path)
 precondition(!files.isEmpty)
+let privacy = try SystemCommand.run("/usr/bin/ipptool", ["-q", "-f", CommandLine.arguments[2], "ipp://localhost:8633/ipp/print", "tests/airprint-privacy.test"])
+precondition(privacy.status == 0)
+let web = try SystemCommand.run("/usr/bin/curl", ["-s", "--max-time", "2", "-o", "/dev/null", "-w", "%{http_code}", "http://localhost:8633/"])
+precondition(web.text == "404")
 bridge.stop()
 waitFor(.stopped)
 precondition(events.contains(.starting) && events.contains(.running) && events.contains(.stopping))

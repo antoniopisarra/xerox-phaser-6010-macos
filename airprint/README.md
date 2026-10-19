@@ -1,6 +1,6 @@
 # AirPrint bridge
 
-Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. The app manages a foreground child server; no persistent daemon is installed. Physical printing from the owner's iPhone was confirmed after installing 1.2.1; iPad and other client/option combinations remain to be tested. The scripts below remain useful for developer dry runs.
+Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. From 1.3.0 the utility manages an opt-in per-user LaunchAgent that survives closing the window and restarts at login. Physical printing from the owner's iPhone was confirmed after installing 1.2.1; iPad and other client/option combinations remain to be tested. The scripts below remain useful for developer dry runs.
 
 The bridge uses a private build of Apple CUPS ippeveprinter (1.2.1+) with the Phaser PPD, advertises a separate `Xerox Phaser 6010N via Mac` endpoint and runs the system `ippeveps` converter for incoming PDF, JPEG, PWG Raster or Apple Raster/URF. The resulting PostScript is submitted to the existing `Phaser6010` CUPS queue. No proprietary library is added. This is based on the [CUPS IPP server](https://openprinting.github.io/cups/doc/man-ippeveprinter.html) and [converter](https://openprinting.github.io/cups/doc/man-ippevepcl.html) interfaces.
 
@@ -12,7 +12,7 @@ On a trusted local network, with the normal driver installed and queue configure
 ./airprint/run-bridge.sh
 ```
 
-This starts a foreground service on TCP 8631 with Bonjour `_print,_universal` subtypes. Stop with Ctrl-C. No launch daemon, firewall rule or persistent sharing setting is installed. Keep the Mac awake. Reachable clients can submit print jobs without authentication: do not expose the port to the internet. Print job acceptance means submission to CUPS, not physical completion; check the local queue. Cancellation after local submission is not yet propagated between the two queues.
+This starts a developer foreground service on TCP 8631 with Bonjour `_print,_universal` subtypes. Stop with Ctrl-C. No launch daemon, firewall rule or persistent sharing setting is installed. Keep the Mac awake. Reachable clients can submit print jobs without authentication: do not expose the port to the internet. Print job acceptance means submission to CUPS, not physical completion; check the local queue. Cancellation after local submission is not yet propagated between the two queues.
 
 For a nonprinting development test, use an existing output directory:
 
@@ -34,7 +34,7 @@ On the development Mac, Get-Printer-Attributes succeeded and reported A4/Letter,
 - Discover and select the service from a real iPhone/iPad on the same LAN, then physically print PDF/photo, color/gray and multiple pages/copies.
 - Verify paper sizes, scale, orientation and existing calibration after Apple Raster conversion.
 - Verify actual advertised DNS-SD records, firewall behavior, sleep/wake, queue failures, client cancellation and privacy of job/status data.
-- The graphical enable/disable control and lifecycle are implemented; verify the actual GUI, close/reopen, update and removal on the owner's Mac. Persistent hosting is not implemented.
+- Persistent per-user hosting is implemented in 1.3.0; verify the actual GUI, close/reopen, display sleep, logout/login, update and removal on the owner's Mac.
 - Decide authentication/TLS and local-network access policy; never silently enable sharing on installation.
 
 Physical iPhone printing is confirmed on the owner's 1.2.1 installation. This is not a claim of Apple certification or testing of all iOS devices/options.
