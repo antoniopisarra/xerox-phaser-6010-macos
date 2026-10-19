@@ -17,3 +17,7 @@ Use Apple Silicon and macOS 26+, with Xcode or Command Line Tools selected by `x
 ## Offline source archive
 
 Unpack the release's complete corresponding-source archive and follow the same instructions. Its `vendor/corresponding-source/ghostpdl-10.08.0.tar.xz` is already included; the fetch step only checks its hash. The installed licenses/project-source directory also carries project sources; the adjacent corresponding-source directory holds the original dependency archive. Place that archive at the documented vendor path before a rebuild from an installed copy.
+
+## Private IPP server (1.2.1+)
+
+`packaging/build.sh` also calls `packaging/build-ipp-server.sh`. The script verifies the pinned Apple CUPS archive using `scripts/fetch-cups.sh`, configures headers in build/cups-source and compiles only tools/ippeveprinter.c against native macOS libcups. No system library, daemon or executable is replaced. A fresh checkout needs network access for this 8 MB source download; release corresponding-source archives include it for offline builds. The executable is installed as bin/phaser-ipp-server. No source patches are applied.

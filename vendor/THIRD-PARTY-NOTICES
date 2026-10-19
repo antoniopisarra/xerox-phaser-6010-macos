@@ -15,3 +15,11 @@ Apple system libraries libSystem and libiconv are provided by macOS.
 foo2hbpl1 encoder: GPL-2.0-or-later; authors preserved in src/foo2hbpl1.c.
 New project code: GPL-2.0-or-later; source and build scripts included.
 The GPL-2.0-or-later option allows use under GPLv3 where needed for AGPL compatibility.
+
+IPP server: Apple CUPS, commit a8968fc4257322b1e4e191c4bccedea98d7b053e.
+Source: https://github.com/apple/cups/tree/a8968fc4257322b1e4e191c4bccedea98d7b053e
+Apache-2.0 with upstream exceptions; LICENSE-CUPS and NOTICE-CUPS included.
+Original archive cups-a8968fc.tar.gz included in corresponding-source/.
+SHA256: 72cc272eb95dac3b8f5914ce727e9ee454a2aa10a56ca954cfc66899eb236624
+Only tools/ippeveprinter.c is compiled, unmodified, against native macOS libcups.
+No system CUPS binary or library is replaced. See packaging/build-ipp-server.sh.

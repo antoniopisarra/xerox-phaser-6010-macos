@@ -9,9 +9,11 @@ final class AirPrintBridge {
   private var awake: Process?
   private var spool: URL?
   private var generation = 0
+  private let port: Int
   private let runtimeRoot: String
   private let dryRunDirectory: URL?
-  init(root: String = AirPrintBridge.root, dryRunDirectory: URL? = nil) {
+  init(root: String = AirPrintBridge.root, dryRunDirectory: URL? = nil, port: Int = 8631) {
+    self.port = port
     self.runtimeRoot = root
     self.dryRunDirectory = dryRunDirectory
   }
@@ -26,7 +28,7 @@ final class AirPrintBridge {
   func start() throws {
     guard server == nil else { return }
     for path in [
-      "/usr/bin/ippeveprinter", "/usr/libexec/cups/command/ippeveps",
+      runtimeRoot + "/bin/phaser-ipp-server", "/usr/libexec/cups/command/ippeveps",
       runtimeRoot + "/airprint/print-job.sh",
     ] {
       guard FileManager.default.isExecutableFile(atPath: path) else {
@@ -45,10 +47,11 @@ final class AirPrintBridge {
     try FileManager.default.createDirectory(
       at: folder, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
     let p = Process()
-    p.executableURL = URL(fileURLWithPath: "/usr/bin/ippeveprinter")
+    p.executableURL = URL(fileURLWithPath: runtimeRoot + "/bin/phaser-ipp-server")
     p.arguments = [
-      "-p", String(Self.port), "-P", runtimeRoot + "/Phaser6010.ppd", "-c",
-      runtimeRoot + "/airprint/print-job.sh", "-d", folder.path, "-r", dryRunDirectory == nil ? "_print,_universal" : "_phaser6010test",
+      "-p", String(port), "-P", runtimeRoot + "/Phaser6010.ppd", "-c",
+      runtimeRoot + "/airprint/print-job.sh", "-d", folder.path, "-r",
+      dryRunDirectory == nil ? "_print,_universal" : "_phaser6010test",
       Self.serviceName,
     ]
     p.environment = [
@@ -67,7 +70,7 @@ final class AirPrintBridge {
       DispatchQueue.main.async {
         guard let self, self.generation == token else { return }
         let requested = self.state == .stopping
-        self.awake?.terminate()
+        if self.awake?.isRunning == true { self.awake?.terminate() }
         self.awake = nil
         self.server = nil
         self.spool = nil
@@ -86,7 +89,7 @@ final class AirPrintBridge {
       let result = try? SystemCommand.run(
         "/usr/bin/ipptool",
         [
-          "-q", "-T", "3", "ipp://localhost:8631/ipp/print",
+          "-q", "-T", "3", "ipp://localhost:\(self?.port ?? 8631)/ipp/print",
           "/usr/share/cups/ipptool/get-printer-attributes.test",
         ], timeout: 5)
       DispatchQueue.main.async {
@@ -117,7 +120,7 @@ final class AirPrintBridge {
   }
   func shutdown() {
     stop()
-    awake?.terminate()
+    if awake?.isRunning == true { awake?.terminate() }
     // No persistent service is installed; the app owns the child process.
   }
 }

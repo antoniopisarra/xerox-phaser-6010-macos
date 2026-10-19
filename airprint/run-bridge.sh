@@ -3,7 +3,8 @@
 # Foreground development service. Stop with Ctrl-C; nothing is installed persistently.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-for tool in /usr/bin/ippeveprinter /usr/libexec/cups/command/ippeveps; do
+./packaging/build-ipp-server.sh
+for tool in "$PWD/build/bin/phaser-ipp-server" /usr/libexec/cups/command/ippeveps; do
  [[ -x "$tool" ]] || { echo "Missing macOS component: $tool" >&2; exit 1; }
 done
 args=()
@@ -20,7 +21,7 @@ else
 fi
 spool=$(/usr/bin/mktemp -d "${TMPDIR:-/private/tmp}/phaser-airprint-spool.XXXXXXXX")
 trap 'rm -rf "$spool"' EXIT
-/usr/bin/ippeveprinter -p 8631 \
+"$PWD/build/bin/phaser-ipp-server" -p 8631 \
  -P packaging/Phaser6010.ppd \
  -c "$PWD/airprint/print-job.sh" -d "$spool" "${args[@]}" 'Xerox Phaser 6010N via Mac' &
 server=$!

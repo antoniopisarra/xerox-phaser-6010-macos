@@ -9,8 +9,8 @@
  <choices-outline><line choice="driver"/><line choice="italian"/><line choice="english"/></choices-outline>
  <choice id="driver" title="Driver e utility Xerox Phaser 6010N" visible="false"><pkg-ref id="org.community.phaser6010"/></choice>
  <choice id="italian" title="Italiano" visible="false" selected="!choices.english.selected"><pkg-ref id="org.community.phaser6010.language.italian"/></choice>
- <pkg-ref id="org.community.phaser6010.language.italian" version="1.2.0" onConclusion="none">Phaser6010-Italian.pkg</pkg-ref>
+ <pkg-ref id="org.community.phaser6010.language.italian" version="1.2.1" onConclusion="none">Phaser6010-Italian.pkg</pkg-ref>
  <choice id="english" title="English interface / Interfaccia inglese" description="Select for English. Leave unchecked for Italiano. / Seleziona per inglese; lascia deselezionato per italiano." start_selected="false"><pkg-ref id="org.community.phaser6010.language.english"/></choice>
- <pkg-ref id="org.community.phaser6010.language.english" version="1.2.0" onConclusion="none">Phaser6010-English.pkg</pkg-ref>
- <pkg-ref id="org.community.phaser6010" version="1.2.0" onConclusion="none">Phaser6010-component.pkg</pkg-ref>
+ <pkg-ref id="org.community.phaser6010.language.english" version="1.2.1" onConclusion="none">Phaser6010-English.pkg</pkg-ref>
+ <pkg-ref id="org.community.phaser6010" version="1.2.1" onConclusion="none">Phaser6010-component.pkg</pkg-ref>
 </installer-gui-script>

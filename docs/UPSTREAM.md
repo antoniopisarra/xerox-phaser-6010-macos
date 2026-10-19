@@ -13,3 +13,7 @@ The unmodified supplied encoder is retained in `vendor/original-encoder/foo2hbpl
 Its header credits Robert Szalai, Rick Richardson, Dave Coffin and Joe Da Silva and grants GPL-2.0-or-later. These notices are preserved. Compare the reference file with `src/foo2hbpl1.c` to inspect this port's bounds/allocation fixes. The AppKit utility, dedicated CUPS filter, calibration resources, build scripts and installer are the macOS integration developed for this project.
 
 Ghostscript/GhostPDL is a separate upstream dependency from [Artifex](https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/tag/gs10080), distributed under AGPL-3.0-or-later with component notices. Its complete pinned source and build recipe accompany the binary distribution.
+
+## Private AirPrint IPP server
+
+Apple CUPS commit `a8968fc4257322b1e4e191c4bccedea98d7b053e`: https://github.com/apple/cups/tree/a8968fc4257322b1e4e191c4bccedea98d7b053e. Only the unmodified tools/ippeveprinter.c application is compiled against the native macOS libcups. Apache-2.0 and upstream exceptions/notices are retained in vendor/LICENSE-CUPS and vendor/NOTICE-CUPS. Full archive cups-a8968fc.tar.gz (SHA-256 `72cc272eb95dac3b8f5914ce727e9ee454a2aa10a56ca954cfc66899eb236624`) is included in binary/source distributions. No existing Apple executable is copied or modified.

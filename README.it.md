@@ -15,7 +15,7 @@ Il progetto è destinato ai Mac Apple Silicon delle famiglie **M1, M2, M3, M4, M
 ## Installazione e prima stampa
 
 1. Collega la stampante al router tramite cavo Ethernet e accendila.
-2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.2.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
+2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.2.1.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
 3. Apri **Configura Xerox Phaser 6010N** dalla cartella **Applicazioni**.
 4. Consenti l'accesso alla rete locale se macOS lo richiede. Seleziona la stampante trovata oppure inserisci il suo indirizzo IPv4, quindi aggiungi/aggiorna la stampante. macOS chiederà l'autorizzazione di un amministratore per configurare la coda.
 5. Dal normale pannello di stampa scegli **Xerox Phaser 6010N**. Sono previsti A4 o Letter, carta normale, colori o scala di grigi, solo fronte.
@@ -71,7 +71,7 @@ Il progetto conserva l'encoder C `foo2hbpl1` già funzionante e corregge un acce
 
 Sono stati corretti la gestione dei file temporanei nel sandbox di stampa e l'adattamento forzato dei PDF che ingrandiva le pagine. Le correzioni di calibrazione vengono applicate una volta per pagina. L'utility nativa AppKit aggiunge ricerca di rete, configurazione della coda, toner, diagnostica con dati ridotti, fogli bilingui e icona. L'installer impedisce che una vecchia copia di sviluppo dell'app intercetti l'installazione.
 
-La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. Il [ponte AirPrint](airprint/README.md) ha ora un comando esplicito di attivazione/arresto nell’app; l’installazione non abilita la condivisione. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
+La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. Il server IPP è compilato privatamente dai sorgenti Apple CUPS fissati a un commit preciso, con sorgenti e licenza Apache inclusi; CUPS di sistema rimane invariato. Il [ponte AirPrint](airprint/README.md) ha ora un comando esplicito di attivazione/arresto nell’app; l’installazione non abilita la condivisione. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
 
 ## Sorgenti, compilazione e verifiche
 
@@ -99,6 +99,7 @@ La base effettivamente utilizzata è la cartella `foo2zjs-macos` fornita dall'au
 Progetto indipendente, non affiliato né approvato da Xerox. Xerox e Phaser sono marchi dei rispettivi titolari. Non sono inclusi driver proprietari o firmware Xerox.
 
 - Encoder e nuovo codice: **GPL-2.0-or-later**, testo in [LICENSE](LICENSE). Autori e avvisi originali restano nel [codice](src/foo2hbpl1.c); è conservata anche una [copia originale](vendor/original-encoder/foo2hbpl1.c).
+- Server IPP privato: Apple CUPS, Apache-2.0 con eccezioni upstream; [licenza](vendor/LICENSE-CUPS), [avvisi](vendor/NOTICE-CUPS) e [provenienza](docs/UPSTREAM.md).
 - Ghostscript/GhostPDL 10.08.0: **AGPL-3.0-or-later**, Artifex e collaboratori. L'opzione GPL «o successiva» permette l'uso sotto GPLv3 quando necessario per la compatibilità con AGPLv3; Ghostscript non va presentato come GPLv2-only.
 - Font e librerie conservano le proprie licenze: [inventario](vendor/THIRD-PARTY-NOTICES) e archivio completo. Dopo l'installazione `/Library/Printers/Phaser6010/licenses` contiene sorgenti, istruzioni di compilazione e testi delle licenze.
 

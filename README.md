@@ -15,7 +15,7 @@ The target is Apple Silicon Macs — M1, M2, M3, M4, M5 and M6 families — runn
 ## Install and print
 
 1. Connect the printer by Ethernet to your router and turn it on.
-2. Download `Driver-Xerox-Phaser-6010N-macOS-1.2.0.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and choose the utility language on the customization page, then finish the installation.
+2. Download `Driver-Xerox-Phaser-6010N-macOS-1.2.1.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and choose the utility language on the customization page, then finish the installation.
 3. Open **Configura Xerox Phaser 6010N** in **Applications**. Choose Italian or English during installation: check **English interface** for English, or leave it unchecked for Italian.
 4. Allow local network access if macOS requests it. Select a discovered printer, or enter its IPv4 address, and add/update the printer. macOS requests administrator authorization to change the print queue.
 5. Select **Xerox Phaser 6010N** in the usual macOS print dialog. Use A4 or Letter, plain paper, color or grayscale, single-sided printing.
@@ -71,7 +71,7 @@ The project retains the proven `foo2hbpl1` C encoder, adds a page-tail memory bo
 
 The pipeline fixes the sandbox-sensitive temporary-file parsing and removes forced PDF fit-to-page behavior. Calibration is applied once per page. The native AppKit utility adds discovery, queue setup, toner monitoring, privacy-conscious diagnostics, bilingual calibration sheets and an application icon. The installer disables bundle relocation so an old development copy cannot capture the installation.
 
-This uses the legacy CUPS PPD/filter interface available on the tested macOS release. The [AirPrint bridge](airprint/README.md) is available through an explicit enable/disable control; installation does not enable network sharing. Future macOS printing changes may require updates.
+This uses the legacy CUPS PPD/filter interface available on the tested macOS release. The IPP server is compiled privately from pinned Apple CUPS source, with its source and Apache license/notices included; system CUPS remains untouched. The [AirPrint bridge](airprint/README.md) is available through an explicit enable/disable control; installation does not enable network sharing. Future macOS printing changes may require updates.
 
 ## Source, build and verification
 
@@ -86,7 +86,7 @@ GS_EXECUTABLE="$PWD/vendor/ghostscript/bin/gs" ./tests/smoke.sh
 ./packaging/package.sh
 ```
 
-The release also provides a complete corresponding-source archive, including the pinned Ghostscript source, so the dependency can be rebuilt offline. Source URLs and SHA-256 verification are recorded in the fetch/build scripts. PDF/icon regeneration additionally uses Python with ReportLab and Apple Swift tools; generated assets are committed.
+The release also provides a complete corresponding-source archive, including the pinned Ghostscript source, so the dependency can be rebuilt offline. The complete pinned Apple CUPS source is also included. Source URLs and SHA-256 verification are recorded in the fetch/build scripts. PDF/icon regeneration additionally uses Python with ReportLab and Apple Swift tools; generated assets are committed.
 
 ## Upstream project
 
@@ -99,6 +99,7 @@ The actual input was the `foo2zjs-macos` directory supplied by the port's author
 Independent community project, unaffiliated with and not endorsed by Xerox. Xerox and Phaser are their owners' trademarks. No proprietary Xerox driver or firmware is bundled.
 
 - Encoder and new project code: **GPL-2.0-or-later**; see [LICENSE](LICENSE). Original encoder authors and notices remain in [the source](src/foo2hbpl1.c), with an [unmodified reference](vendor/original-encoder/foo2hbpl1.c).
+- Private IPP server: Apple CUPS, Apache-2.0 with upstream exceptions; see [license](vendor/LICENSE-CUPS), [notices](vendor/NOTICE-CUPS) and [provenance](docs/UPSTREAM.md).
 - Ghostscript/GhostPDL 10.08.0: **AGPL-3.0-or-later**, Artifex and contributors. The GPL's “or later” option permits GPLv3 use where AGPLv3 compatibility is needed. Do not relicense Ghostscript as GPLv2-only.
 - Bundled fonts/libraries retain their own notices; see [third-party inventory](vendor/THIRD-PARTY-NOTICES) and the complete source archive. The installed `/Library/Printers/Phaser6010/licenses` directory contains sources, build recipes and license texts.
 

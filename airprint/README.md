@@ -2,7 +2,7 @@
 
 Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. The app manages a foreground child server; no persistent daemon is installed. Physical iPhone/iPad acceptance remains pending. The scripts below remain useful for developer dry runs.
 
-The prototype uses macOS's `/usr/bin/ippeveprinter` with the Phaser PPD, advertises a separate `Xerox Phaser 6010N via Mac` endpoint and runs the system `ippeveps` converter for incoming PDF, JPEG, PWG Raster or Apple Raster/URF. The resulting PostScript is submitted to the existing `Phaser6010` CUPS queue. No proprietary library is added. This is based on the [CUPS IPP server](https://openprinting.github.io/cups/doc/man-ippeveprinter.html) and [converter](https://openprinting.github.io/cups/doc/man-ippevepcl.html) interfaces.
+The bridge uses a private build of Apple CUPS ippeveprinter (1.2.1+) with the Phaser PPD, advertises a separate `Xerox Phaser 6010N via Mac` endpoint and runs the system `ippeveps` converter for incoming PDF, JPEG, PWG Raster or Apple Raster/URF. The resulting PostScript is submitted to the existing `Phaser6010` CUPS queue. No proprietary library is added. This is based on the [CUPS IPP server](https://openprinting.github.io/cups/doc/man-ippeveprinter.html) and [converter](https://openprinting.github.io/cups/doc/man-ippevepcl.html) interfaces.
 
 ## Development use
 
@@ -27,7 +27,7 @@ Dry-run mode saves converted PostScript and never calls `lp`. It uses the custom
 
 On the development Mac, Get-Printer-Attributes succeeded and reported A4/Letter, one-sided printing, color/monochrome, 600 dpi and Apple Raster support (`V1.4,CP1,RS600,W8,SRGB24`). A PDF and a synthetic sRGB Apple Raster job passed through IPP and completed conversion in dry-run mode. An empty raster job was rejected. These tests sent **no physical print job**.
 
-`./tests/airprint.sh` repeats offline PDF/URF conversion and verifies the resulting PostScript with the private Ghostscript, without launching a network server. The installed Apple ippeveprinter version rejects some combinations of generic-model flags and PPD settings, so the prototype derives capabilities directly from the PPD rather than adding conflicting flags.
+`./tests/airprint.sh` repeats offline PDF/URF conversion and verifies the resulting PostScript with the private Ghostscript, without launching a network server. The macOS-supplied executable rejected actual iPhone Create-Job requests. The private server resolves the observed rejection; it also rejects some combinations of generic-model flags and PPD settings, so the prototype derives capabilities directly from the PPD rather than adding conflicting flags.
 
 ## Remaining acceptance and future work
 

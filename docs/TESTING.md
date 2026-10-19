@@ -37,3 +37,7 @@ The AirPrint source prototype passed local IPP attribute queries and dry-run PDF
 ## 1.2.0 AirPrint acceptance
 
 The GUI controller is tested directly by `./tests/bridge.sh`, using a private fixture runtime and dry-run helper: IPP startup/readiness, PDF conversion, stop and restart, without contacting a physical printer. `./tests/airprint.sh` checks PDF/Apple Raster PostScript output offline. Physical iOS discovery, actual print/calibration, copies/media/orientation, firewall permission prompts and the new GUI page remain for the owner to test. No automated test certifies physical AirPrint behavior.
+
+## 1.2.1 negotiation regression
+
+The owner reproduced an iPhone Waiting/Printing loop against the macOS executable. Read-only job history showed no accepted jobs. Standard A4 media-col validation failed because rounded PPD dimensions exported 20990 × 29704 rather than 21000 × 29700; corrected dimensions now pass tests/airprint-validate-a4.test. A temporary private IPP server then accepted the owner's iPhone Create-Job/Send-Document and completed conversion; the owner confirmed the iPhone queue cleared. This diagnostic mode did not forward the document to the printer. The final private server build also passes A4 validation, chunked create/send, controller stop/restart and PDF/URF conversion checks. Physical printing using the installed 1.2.1 package remains to be verified.

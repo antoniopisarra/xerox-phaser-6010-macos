@@ -9,6 +9,7 @@ stage=$(mktemp -d /private/tmp/phaser6010-app.XXXXXXXX)
 trap 'rm -rf "$stage"' EXIT
 appdir="$stage/Configura Xerox Phaser 6010N.app"
 mkdir -p build/bin "$appdir/Contents/MacOS"
+./packaging/build-ipp-server.sh
 xcrun clang -arch arm64 -O2 -Wall src/foo2hbpl1.c -o build/bin/foo2hbpl1
 xcrun swiftc -module-cache-path "$PWD/build/module-cache" -O -framework Cocoa -framework PDFKit app/*.swift -o "$appdir/Contents/MacOS/ConfiguraPhaser"
 cat > "$appdir/Contents/Info.plist" <<'PLIST'

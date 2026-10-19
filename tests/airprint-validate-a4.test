@@ -1,0 +1,24 @@
+{
+ NAME "Validate standard A4 Apple Raster"
+ OPERATION Validate-Job
+ GROUP operation-attributes-tag
+ ATTR charset attributes-charset utf-8
+ ATTR language attributes-natural-language en
+ ATTR uri printer-uri $uri
+ ATTR mimeMediaType document-format image/urf
+ GROUP job-attributes-tag
+ ATTR integer copies 1
+ ATTR keyword sides one-sided
+ ATTR keyword print-color-mode color
+ ATTR resolution printer-resolution 600dpi
+ ATTR collection media-col {
+  MEMBER collection media-size {
+   MEMBER integer x-dimension 21000
+   MEMBER integer y-dimension 29700
+  }
+  MEMBER keyword media-type stationery
+  MEMBER keyword media-source auto
+ }
+ STATUS successful-ok
+ STATUS successful-ok-ignored-or-substituted-attributes
+}
