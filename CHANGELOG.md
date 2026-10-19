@@ -4,7 +4,7 @@
 
 - Fixed A4 IPP negotiation: PPD dimensions now map exactly to 21000 × 29700 hundredths of a millimeter instead of rounded point dimensions rejected by standard media-col requests.
 - Replaced the system ippeveprinter executable with a private build from pinned Apple CUPS source. The macOS-supplied executable rejected the owner's iPhone Create-Job requests with “Unexpected document data following request”.
-- The private server accepted iPhone Create-Job/Send-Document and completed conversion in nonprinting diagnostics; physical printing remains to be checked with the installed package.
+- The private server accepted iPhone Create-Job/Send-Document and completed conversion in nonprinting diagnostics; the owner subsequently confirmed successful physical iPhone printing after installing 1.2.1.
 - Added standard A4 Validate-Job and chunked Create-Job/Send-Document regression checks. Bundled complete CUPS source and Apache license/notices.
 
 ## 1.2.0

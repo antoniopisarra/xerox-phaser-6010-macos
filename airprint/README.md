@@ -1,6 +1,6 @@
 # AirPrint bridge
 
-Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. The app manages a foreground child server; no persistent daemon is installed. Physical iPhone/iPad acceptance remains pending. The scripts below remain useful for developer dry runs.
+Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. The app manages a foreground child server; no persistent daemon is installed. Physical printing from the owner's iPhone was confirmed after installing 1.2.1; iPad and other client/option combinations remain to be tested. The scripts below remain useful for developer dry runs.
 
 The bridge uses a private build of Apple CUPS ippeveprinter (1.2.1+) with the Phaser PPD, advertises a separate `Xerox Phaser 6010N via Mac` endpoint and runs the system `ippeveps` converter for incoming PDF, JPEG, PWG Raster or Apple Raster/URF. The resulting PostScript is submitted to the existing `Phaser6010` CUPS queue. No proprietary library is added. This is based on the [CUPS IPP server](https://openprinting.github.io/cups/doc/man-ippeveprinter.html) and [converter](https://openprinting.github.io/cups/doc/man-ippevepcl.html) interfaces.
 
@@ -37,4 +37,4 @@ On the development Mac, Get-Printer-Attributes succeeded and reported A4/Letter,
 - The graphical enable/disable control and lifecycle are implemented; verify the actual GUI, close/reopen, update and removal on the owner's Mac. Persistent hosting is not implemented.
 - Decide authentication/TLS and local-network access policy; never silently enable sharing on installation.
 
-Until physical checks pass, the bridge is available for user testing, without a claim of certified or fully verified iOS support.
+Physical iPhone printing is confirmed on the owner's 1.2.1 installation. This is not a claim of Apple certification or testing of all iOS devices/options.
