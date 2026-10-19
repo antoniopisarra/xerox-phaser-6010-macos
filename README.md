@@ -69,6 +69,12 @@ GS_EXECUTABLE="$PWD/vendor/ghostscript/bin/gs" ./tests/smoke.sh
 
 The release also provides a complete corresponding-source archive, including the pinned Ghostscript source, so the dependency can be rebuilt offline. Source URLs and SHA-256 verification are recorded in the fetch/build scripts. PDF/icon regeneration additionally uses Python with ReportLab and Apple Swift tools; generated assets are committed.
 
+## Upstream project
+
+The encoder derives from the Linux **[foo2zjs / foo2hbpl1 project](https://github.com/OpenPrinting/foo2zjs)**. It was not rewritten from scratch: this port preserves the original authors' work and adds the macOS pipeline, installer and utility. The supplied source credits **Robert Szalai, Rick Richardson, Dave Coffin and Joe Da Silva**. Thank you for making open-source HBPLv1 printing possible.
+
+The actual input was the `foo2zjs-macos` directory supplied by the port's author, including the HBPLv1 changes recorded in its ChangeLog. Its original Git history was not included, so this copy is not attributed to an unverified upstream commit. See [provenance and changes](docs/UPSTREAM.md).
+
 ## Licenses and credits
 
 Independent community project, unaffiliated with and not endorsed by Xerox. Xerox and Phaser are their owners' trademarks. No proprietary Xerox driver or firmware is bundled.
