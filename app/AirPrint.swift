@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+import Foundation
+
+final class AirPrintBridge {
+  enum State: Equatable { case stopped, starting, running, stopping, failed }
+  private(set) var state: State = .stopped
+  var onChange: ((State) -> Void)?
+  private var server: Process?
+  private var awake: Process?
+  private var spool: URL?
+  private var generation = 0
+  private let runtimeRoot: String
+  private let dryRunDirectory: URL?
+  init(root: String = AirPrintBridge.root, dryRunDirectory: URL? = nil) {
+    self.runtimeRoot = root
+    self.dryRunDirectory = dryRunDirectory
+  }
+  static let serviceName = "Xerox Phaser 6010N via Mac"
+  static let port = 8631
+  static let root = "/Library/Printers/Phaser6010"
+
+  private func change(_ value: State) {
+    state = value
+    onChange?(value)
+  }
+  func start() throws {
+    guard server == nil else { return }
+    for path in [
+      "/usr/bin/ippeveprinter", "/usr/libexec/cups/command/ippeveps",
+      runtimeRoot + "/airprint/print-job.sh",
+    ] {
+      guard FileManager.default.isExecutableFile(atPath: path) else {
+        throw CalibrationError(L("Installa il pacchetto aggiornato per usare AirPrint."))
+      }
+    }
+    if dryRunDirectory == nil {
+      let queue = try SystemCommand.run("/usr/bin/lpstat", ["-p", "Phaser6010"])
+      let ppd = try? String(contentsOfFile: "/etc/cups/ppd/Phaser6010.ppd", encoding: .utf8)
+      guard queue.status == 0, ppd?.contains("Xerox Phaser 6010N Community") == true else {
+        throw CalibrationError(L("Configura prima la coda Phaser6010 nella sezione Stampante."))
+      }
+    }
+    let folder = FileManager.default.temporaryDirectory.appendingPathComponent(
+      "phaser-airprint-" + UUID().uuidString, isDirectory: true)
+    try FileManager.default.createDirectory(
+      at: folder, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+    let p = Process()
+    p.executableURL = URL(fileURLWithPath: "/usr/bin/ippeveprinter")
+    p.arguments = [
+      "-p", String(Self.port), "-P", runtimeRoot + "/Phaser6010.ppd", "-c",
+      runtimeRoot + "/airprint/print-job.sh", "-d", folder.path, "-r", dryRunDirectory == nil ? "_print,_universal" : "_phaser6010test",
+      Self.serviceName,
+    ]
+    p.environment = [
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin", "TMPDIR": folder.path, "HOME": NSHomeDirectory(),
+      "LANG": "en_US.UTF-8",
+    ]
+    if let dryRunDirectory {
+      p.environment?["PHASER_AIRPRINT_DRY_RUN_DIR"] = dryRunDirectory.path
+    }
+    // Discard server logs: they can contain document names and client addresses.
+    p.standardOutput = FileHandle.nullDevice
+    p.standardError = FileHandle.nullDevice
+    generation += 1
+    let token = generation
+    p.terminationHandler = { [weak self] _ in
+      DispatchQueue.main.async {
+        guard let self, self.generation == token else { return }
+        let requested = self.state == .stopping
+        self.awake?.terminate()
+        self.awake = nil
+        self.server = nil
+        self.spool = nil
+        try? FileManager.default.removeItem(at: folder)
+        self.change(requested ? .stopped : .failed)
+      }
+    }
+    do { try p.run() } catch {
+      try? FileManager.default.removeItem(at: folder)
+      throw error
+    }
+    server = p
+    spool = folder
+    change(.starting)
+    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 1.5) { [weak self] in
+      let result = try? SystemCommand.run(
+        "/usr/bin/ipptool",
+        [
+          "-q", "-T", "3", "ipp://localhost:8631/ipp/print",
+          "/usr/share/cups/ipptool/get-printer-attributes.test",
+        ], timeout: 5)
+      DispatchQueue.main.async {
+        guard let self, self.generation == token, self.state == .starting, p.isRunning else {
+          return
+        }
+        if result?.status == 0 {
+          let awake = Process()
+          awake.executableURL = URL(fileURLWithPath: "/usr/bin/caffeinate")
+          awake.arguments = ["-i", "-w", String(p.processIdentifier)]
+          try? awake.run()
+          self.awake = awake
+          self.change(.running)
+        } else {
+          self.change(.failed)
+          p.terminate()
+        }
+      }
+    }
+  }
+  func stop() {
+    guard let p = server else {
+      change(.stopped)
+      return
+    }
+    change(.stopping)
+    if p.isRunning { p.terminate() }
+  }
+  func shutdown() {
+    stop()
+    awake?.terminate()
+    // No persistent service is installed; the app owns the child process.
+  }
+}

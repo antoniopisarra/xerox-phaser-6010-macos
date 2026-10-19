@@ -22,6 +22,19 @@ if [[ -n ${PHASER_AIRPRINT_DRY_RUN_DIR:-} ]]; then
  /bin/cp "$tmp/job.ps" "$target"
  echo 'INFO: Dry run saved; no print job submitted.' >&2
 else
- /usr/bin/lp -d Phaser6010 -n 1 -t 'AirPrint document' -o document-format=application/postscript "$tmp/job.ps" >/dev/null
+ paper=A4
+ case ${IPP_MEDIA:-${IPP_MEDIA_DEFAULT:-iso_a4_210x297mm}} in
+  iso_a4_210x297mm|A4) paper=A4;;
+  na_letter_8.5x11in|Letter) paper=Letter;;
+  *) echo 'ERROR: Unsupported paper size.' >&2; exit 1;;
+ esac
+ if [[ -n ${IPP_MEDIA_COL:-} ]]; then
+  case "$IPP_MEDIA_COL" in
+   *x-dimension=21590*y-dimension=27940*) paper=Letter;;
+   *x-dimension=21000*y-dimension=29700*) paper=A4;;
+   *) echo 'ERROR: Unsupported media collection.' >&2; exit 1;;
+  esac
+ fi
+ /usr/bin/lp -d Phaser6010 -n 1 -t 'AirPrint document' -o "PageSize=$paper" -o document-format=application/postscript "$tmp/job.ps" >/dev/null
  echo 'INFO: Submitted to the local Phaser6010 queue; check that queue for completion.' >&2
 fi

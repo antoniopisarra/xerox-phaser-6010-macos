@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Added Italian/English AirPrint page with explicit enable/disable, startup IPP check and error/status feedback.
+- Reuses Apple's system IPP server and Apple Raster/PostScript converter with the existing calibrated CUPS queue; forwards A4/Letter media.
+- Sharing stays off by default and stops on app exit; inhibits idle Mac sleep while active, without installing a persistent daemon.
+- Added controller lifecycle and nonprinting conversion tests. Physical iPhone/iPad acceptance is still pending.
+
 ## 1.1.0
 
 - Italian/English utility interface, selected during installation; applies to every user of the Mac.

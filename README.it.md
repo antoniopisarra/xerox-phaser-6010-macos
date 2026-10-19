@@ -10,12 +10,12 @@ La Xerox Phaser 6010N è una stampante ancora valida, ma il suo software origina
 
 Il progetto è destinato ai Mac Apple Silicon delle famiglie **M1, M2, M3, M4, M5 e M6**, con **macOS 26 o successivo**. È il requisito dell'architettura ARM64: non significa che ogni modello o futura versione di macOS sia stato provato fisicamente. La stampa è stata verificata su un Mac Apple Silicon con versione del sistema riportata come macOS 26.6.2. La [pagina dei test](docs/TESTING.md) distingue le verifiche eseguite da quelle ancora necessarie. Per il supporto del produttore consulta i [download ufficiali Xerox](https://www.support.xerox.com/en-us/product/phaser-6010/downloads).
 
-**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel, altri modelli di stampante o AirPrint da iPhone/iPad.
+**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel o altri modelli di stampante. Il ponte AirPrint opzionale è pronto per la prova reale da iPhone/iPad, descritta sotto.
 
 ## Installazione e prima stampa
 
 1. Collega la stampante al router tramite cavo Ethernet e accendila.
-2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.1.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
+2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.2.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
 3. Apri **Configura Xerox Phaser 6010N** dalla cartella **Applicazioni**.
 4. Consenti l'accesso alla rete locale se macOS lo richiede. Seleziona la stampante trovata oppure inserisci il suo indirizzo IPv4, quindi aggiungi/aggiorna la stampante. macOS chiederà l'autorizzazione di un amministratore per configurare la coda.
 5. Dal normale pannello di stampa scegli **Xerox Phaser 6010N**. Sono previsti A4 o Letter, carta normale, colori o scala di grigi, solo fronte.
@@ -24,10 +24,11 @@ Il pacchetto attuale **non ha firma Apple Developer ID e non è notarizzato**. L
 
 La scelta della lingua vale per tutti gli utenti del Mac e si applica al successivo avvio dell'app. Puoi cambiarla reinstallando; i pannelli di sistema seguono la lingua di macOS.
 
-## Le tre sezioni dell'applicazione
+## Le sezioni dell'applicazione
 
 - **Stampante:** ricerca in rete, inserimento manuale dell'IP, creazione/aggiornamento della coda e collegamento alle impostazioni stampanti di macOS.
 - **Stato e toner:** stato della stampante e livelli ciano, magenta, giallo e nero; aggiornamento manuale e automatico ogni 30 secondi mentre la pagina è visibile; pagina web della stampante, impostazioni di condivisione ed esportazione della diagnostica.
+- **AirPrint:** attivazione/arresto del ponte sul Mac, stato e istruzioni per iPhone/iPad.
 - **Calibrazione:** foglio di centratura italiano/inglese, pulsante per stamparlo, spostamento orizzontale/verticale, correzione separata di larghezza/altezza e calcolo dalle misure rilevate sul foglio.
 
 ### Schermate dell'app
@@ -62,7 +63,7 @@ PDF: [Italiano](app/Resources/Centratura-it.pdf) · [English](app/Resources/Cali
 
 Installa il nuovo pacchetto sopra quello precedente: i componenti vengono aggiornati e la calibrazione locale conservata. **Disinstalla…** nell'app rimuove applicazione, driver, calibrazione e coda `Phaser6010`, inclusi i suoi lavori in attesa. Sono richieste conferma e autorizzazione amministratore.
 
-Il pulsante di condivisione apre le impostazioni di macOS. La condivisione va abilitata dall'utente e richiede che il Mac rimanga acceso. Questa versione **non include un server AirPrint** e non dichiara stampa da iPhone/iPad. [Dettagli](docs/SHARING.md).
+Il pulsante di condivisione apre le impostazioni di macOS. La condivisione va abilitata dall'utente e richiede che il Mac rimanga acceso. Per il ponte AirPrint apri **AirPrint → Attiva AirPrint**. Su iPhone/iPad scegli **Condividi → Stampa → Seleziona stampante → Xerox Phaser 6010N via Mac**. Tieni aperta l’app e il Mac acceso sulla stessa rete locale. Il servizio impedisce lo stop per inattività; stop manuale, chiusura del coperchio o spegnimento lo interrompono. Chi può raggiungere il servizio può inviare lavori: usa una rete fidata. Non si attiva automaticamente durante installazione o avvio. I test locali IPP/PDF/Apple Raster sono passati; scoperta e stampa reali da iOS restano da confermare. [Dettagli](docs/SHARING.md).
 
 ## Cosa è stato realizzato
 
@@ -70,7 +71,7 @@ Il progetto conserva l'encoder C `foo2hbpl1` già funzionante e corregge un acce
 
 Sono stati corretti la gestione dei file temporanei nel sandbox di stampa e l'adattamento forzato dei PDF che ingrandiva le pagine. Le correzioni di calibrazione vengono applicate una volta per pagina. L'utility nativa AppKit aggiunge ricerca di rete, configurazione della coda, toner, diagnostica con dati ridotti, fogli bilingui e icona. L'installer impedisce che una vecchia copia di sviluppo dell'app intercetti l'installazione.
 
-La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. È iniziato lo sviluppo di un [ponte AirPrint](airprint/README.md), disponibile come prototipo nei sorgenti: questo installer non abilita la condivisione. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
+La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. Il [ponte AirPrint](airprint/README.md) ha ora un comando esplicito di attivazione/arresto nell’app; l’installazione non abilita la condivisione. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
 
 ## Sorgenti, compilazione e verifiche
 

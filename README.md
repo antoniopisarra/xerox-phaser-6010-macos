@@ -10,12 +10,12 @@ The Xerox Phaser 6010N can still print well, but its original software belongs t
 
 The target is Apple Silicon Macs — M1, M2, M3, M4, M5 and M6 families — running **macOS 26 or later**. This describes the ARM64 build target, not a physical test on every chip or future macOS release. Printing was physically tested on an Apple Silicon Mac reported as macOS 26.6.2. See [testing](docs/TESTING.md) for the distinction between tested behavior and remaining checks. Consult [Xerox's official downloads](https://www.support.xerox.com/en-us/product/phaser-6010/downloads) for vendor support.
 
-**Only the Xerox Phaser 6010N connected by Ethernet is supported.** The Mac can use Wi-Fi on the same local network. USB, Intel Macs, other printer models and iPhone/iPad AirPrint are outside this release's support.
+**Only the Xerox Phaser 6010N connected by Ethernet is supported.** The Mac can use Wi-Fi on the same local network. USB, Intel Macs and other printer models are outside this release's support. The optional AirPrint bridge is ready for physical iPhone/iPad testing; see below.
 
 ## Install and print
 
 1. Connect the printer by Ethernet to your router and turn it on.
-2. Download `Driver-Xerox-Phaser-6010N-macOS-1.1.0.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and choose the utility language on the customization page, then finish the installation.
+2. Download `Driver-Xerox-Phaser-6010N-macOS-1.2.0.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and choose the utility language on the customization page, then finish the installation.
 3. Open **Configura Xerox Phaser 6010N** in **Applications**. Choose Italian or English during installation: check **English interface** for English, or leave it unchecked for Italian.
 4. Allow local network access if macOS requests it. Select a discovered printer, or enter its IPv4 address, and add/update the printer. macOS requests administrator authorization to change the print queue.
 5. Select **Xerox Phaser 6010N** in the usual macOS print dialog. Use A4 or Letter, plain paper, color or grayscale, single-sided printing.
@@ -24,10 +24,11 @@ The current installer is **not signed with an Apple Developer ID and is not nota
 
 The language choice applies to all users and takes effect at the next launch. Reinstall to change it; macOS system dialogs follow the system language.
 
-## The three pages
+## The utility pages
 
 - **Printer / Stampante:** network discovery, manual IPv4 entry, queue creation/update and access to macOS printer settings.
 - **Status and toner / Stato e toner:** printer state and cyan/magenta/yellow/black levels, manual refresh and automatic refresh every 30 seconds while this page is visible; printer web page, sharing settings and a diagnostic report export.
+- **AirPrint:** start/stop the Mac-hosted bridge, service status and iPhone/iPad instructions.
 - **Calibration / Calibrazione:** Italian/English calibration PDF, a print button, horizontal/vertical offsets, independent width/height corrections and a calculator based on actual paper measurements.
 
 ### Application screenshots
@@ -62,7 +63,7 @@ PDFs: [Italian](app/Resources/Centratura-it.pdf) · [English](app/Resources/Cali
 
 Install a newer package over the previous one. It replaces application/driver files and preserves the local calibration settings. Use **Disinstalla…** in the utility to remove its application, driver, calibration and the `Phaser6010` queue, including jobs still in that queue. The utility asks for confirmation and administrator authorization.
 
-The sharing button opens macOS sharing settings. Sharing is configured by the user and requires the Mac to remain on. This release does **not** implement an AirPrint server or advertise iPhone/iPad support. See [sharing](docs/SHARING.md).
+The sharing button opens macOS sharing settings. Sharing is configured by the user and requires the Mac to remain on. Open **AirPrint → Enable AirPrint** to start the optional bridge. On iPhone/iPad, use **Share → Print → Select Printer → Xerox Phaser 6010N via Mac**. Keep the app open and the Mac on, on the same LAN. Idle sleep is inhibited while sharing; manual sleep, closing the lid or shutting down still interrupts it. Anyone able to reach the service can submit jobs: use a trusted network. No service starts automatically on installation or launch. Local IPP/PDF/Apple Raster tests passed; physical iOS discovery/printing remains to be confirmed. See [sharing](docs/SHARING.md).
 
 ## What changed from the working prototype?
 
@@ -70,7 +71,7 @@ The project retains the proven `foo2hbpl1` C encoder, adds a page-tail memory bo
 
 The pipeline fixes the sandbox-sensitive temporary-file parsing and removes forced PDF fit-to-page behavior. Calibration is applied once per page. The native AppKit utility adds discovery, queue setup, toner monitoring, privacy-conscious diagnostics, bilingual calibration sheets and an application icon. The installer disables bundle relocation so an old development copy cannot capture the installation.
 
-This uses the legacy CUPS PPD/filter interface available on the tested macOS release. An [AirPrint bridge prototype](airprint/README.md) is now available as development source; network sharing is not enabled by this installer. Future macOS printing changes may require updates.
+This uses the legacy CUPS PPD/filter interface available on the tested macOS release. The [AirPrint bridge](airprint/README.md) is available through an explicit enable/disable control; installation does not enable network sharing. Future macOS printing changes may require updates.
 
 ## Source, build and verification
 

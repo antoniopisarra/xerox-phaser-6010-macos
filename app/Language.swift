@@ -21,6 +21,31 @@ enum AppLanguage {
     return resolve(selection: installed, preferred: Locale.preferredLanguages.first)
   }
   static let english: [String: String] = [
+    "Installa il pacchetto aggiornato per usare AirPrint.":
+      "Install the updated package to use AirPrint.",
+    "Configura prima la coda Phaser6010 nella sezione Stampante.":
+      "Set up the Phaser6010 queue on the Printer page first.",
+    "Stampa dal tuo iPhone.": "Print from your iPhone.",
+    "Il Mac fa da ponte tra iPhone o iPad e la Xerox Ethernet.":
+      "Your Mac connects iPhone or iPad printing to the Ethernet Xerox.",
+    "Attiva AirPrint": "Enable AirPrint",
+    "Disattiva AirPrint": "Disable AirPrint",
+    "Come trovarla su iPhone e iPad": "Find the printer on iPhone and iPad",
+    "1. Collega iPhone e Mac alla stessa rete locale.\n2. Attiva AirPrint e lascia aperta questa app sul Mac.\n3. Su iPhone: Condividi → Stampa → Seleziona stampante.\n4. Scegli Xerox Phaser 6010N via Mac.":
+      "1. Connect iPhone and Mac to the same local network.\n2. Enable AirPrint and keep this app open on the Mac.\n3. On iPhone: Share → Print → Select Printer.\n4. Choose Xerox Phaser 6010N via Mac.",
+    "Chi può raggiungere questo Mac in rete può inviare stampe. Usa una rete fidata. Il Mac deve restare acceso; chiudendo l’app la condivisione si arresta.":
+      "Anyone who can reach this Mac over the network can submit jobs. Use a trusted network. Keep the Mac on; closing this app stops sharing.",
+    "Da verificare con il tuo iPhone: i test locali PDF e Apple Raster sono passati, ma la stampa reale da iOS richiede ancora una prova.":
+      "Ready for your iPhone test: local PDF and Apple Raster checks passed, but physical printing from iOS still needs testing.",
+    "AirPrint disattivato. Premi Attiva AirPrint per condividere la Xerox.":
+      "AirPrint is off. Choose Enable AirPrint to share the Xerox.",
+    "Avvio del servizio e verifica IPP in corso…": "Starting the service and checking IPP…",
+    "AirPrint attivo: Xerox Phaser 6010N via Mac. Ora selezionala sull’iPhone.":
+      "AirPrint is on: Xerox Phaser 6010N via Mac. Select it on your iPhone.",
+    "Arresto della condivisione in corso…": "Stopping sharing…",
+    "Servizio non disponibile. Controlla la coda Phaser6010, la rete locale e che la porta 8631 sia libera, poi riprova.":
+      "Service unavailable. Check the Phaser6010 queue, local network and that port 8631 is free, then try again.",
+
     "stampante compatibile trovata": "compatible printer found",
     "stampanti compatibili trovate": "compatible printers found",
     "Componente di macOS non disponibile: ": "macOS component unavailable: ",
@@ -104,8 +129,8 @@ enum AppLanguage {
     "Stampanti e scanner": "Printers & Scanners",
     "Esporta diagnostica…": "Export diagnostics…",
     "Condivisione del Mac…": "Mac sharing…",
-    "Condivisione con altri computer.\nAirPrint per iPhone e iPad non incluso in questa versione.":
-      "Sharing with other computers.\nAirPrint for iPhone and iPad is not included in this version.",
+    "Condivisione standard di macOS.\nPer iPhone e iPad apri la sezione AirPrint.":
+      "Standard macOS sharing.\nFor iPhone and iPad, open the AirPrint page.",
     "Seleziona una stampante": "Select a printer",
     "Apri Stampante e seleziona la Xerox oppure inserisci il suo indirizzo IP.":
       "Open Printer and select the Xerox or enter its IP address.",

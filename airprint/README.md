@@ -1,6 +1,6 @@
-# AirPrint bridge prototype
+# AirPrint bridge
 
-This is development source, **not an enabled feature of the 1.1.0 installer**. The graphical utility does not yet turn it on. It is included to develop and test a Mac-hosted bridge without changing the proven driver pipeline.
+Version 1.2.0 installs the job helper and adds a graphical enable/disable control. Sharing is off by default. The app manages a foreground child server; no persistent daemon is installed. Physical iPhone/iPad acceptance remains pending. The scripts below remain useful for developer dry runs.
 
 The prototype uses macOS's `/usr/bin/ippeveprinter` with the Phaser PPD, advertises a separate `Xerox Phaser 6010N via Mac` endpoint and runs the system `ippeveps` converter for incoming PDF, JPEG, PWG Raster or Apple Raster/URF. The resulting PostScript is submitted to the existing `Phaser6010` CUPS queue. No proprietary library is added. This is based on the [CUPS IPP server](https://openprinting.github.io/cups/doc/man-ippeveprinter.html) and [converter](https://openprinting.github.io/cups/doc/man-ippevepcl.html) interfaces.
 
@@ -29,12 +29,12 @@ On the development Mac, Get-Printer-Attributes succeeded and reported A4/Letter,
 
 `./tests/airprint.sh` repeats offline PDF/URF conversion and verifies the resulting PostScript with the private Ghostscript, without launching a network server. The installed Apple ippeveprinter version rejects some combinations of generic-model flags and PPD settings, so the prototype derives capabilities directly from the PPD rather than adding conflicting flags.
 
-## Remaining before a GUI sharing feature
+## Remaining acceptance and future work
 
 - Discover and select the service from a real iPhone/iPad on the same LAN, then physically print PDF/photo, color/gray and multiple pages/copies.
 - Verify paper sizes, scale, orientation and existing calibration after Apple Raster conversion.
 - Verify actual advertised DNS-SD records, firewall behavior, sleep/wake, queue failures, client cancellation and privacy of job/status data.
-- Add an explicit graphical enable/disable switch, service lifecycle/error handling, persistent hosting only if requested, and removal/update behavior.
+- The graphical enable/disable control and lifecycle are implemented; verify the actual GUI, close/reopen, update and removal on the owner's Mac. Persistent hosting is not implemented.
 - Decide authentication/TLS and local-network access policy; never silently enable sharing on installation.
 
-Until these checks pass, this is an AirPrint development bridge, not a claim of certified or completed iOS support.
+Until physical checks pass, the bridge is available for user testing, without a claim of certified or fully verified iOS support.

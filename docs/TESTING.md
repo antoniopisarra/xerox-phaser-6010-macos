@@ -33,3 +33,7 @@ Other Apple Silicon chips, Intel, USB, AirPrint and future macOS releases have n
 Language selection parsing and Italian/English UI strings are covered by core tests; `python3 tests/localization.py` checks translation coverage for every static UI localization key. Installer package choices select exactly one script-only language component; the selected language is stored in the root-owned driver directory and used at application launch. The owner's post-installation screenshots confirm the English layouts of all three pages. The installer customization page and Italian layout are not covered by those captures; the local installer inspection tool could not locate the target volume in this execution environment. System print/security dialogs follow macOS's own language.
 
 The AirPrint source prototype passed local IPP attribute queries and dry-run PDF/URF conversion without printing. It is not activated by the installer. See airprint/README.md for remaining physical iOS and service lifecycle work.
+
+## 1.2.0 AirPrint acceptance
+
+The GUI controller is tested directly by `./tests/bridge.sh`, using a private fixture runtime and dry-run helper: IPP startup/readiness, PDF conversion, stop and restart, without contacting a physical printer. `./tests/airprint.sh` checks PDF/Apple Raster PostScript output offline. Physical iOS discovery, actual print/calibration, copies/media/orientation, firewall permission prompts and the new GUI page remain for the owner to test. No automated test certifies physical AirPrint behavior.

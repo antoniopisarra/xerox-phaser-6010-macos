@@ -12,6 +12,6 @@ Discovery combines Bonjour service browsing with a bounded SNMP v1 local-network
 
 Diagnostic export contains version, OS, driver availability, calibration and the current state/toner snapshot. It intentionally excludes documents, job titles, usernames, printer IP and serial number. It does not dump the full CUPS error log.
 
-CUPS PPD/filter support is legacy and may change in future macOS. An IPP Printer Application would expose a modern IPP endpoint and translate jobs to HBPL, requiring a maintained service, job handling, authentication and Bonjour advertisement. Genuine AirPrint would additionally need correct capabilities and physical iOS testing. This release does not implement that server.
+CUPS PPD/filter support is legacy and may change in future macOS. An IPP Printer Application would expose a modern IPP endpoint and translate jobs to HBPL, requiring a maintained service, job handling, authentication and Bonjour advertisement. Genuine AirPrint would additionally need correct capabilities and physical iOS testing. Version 1.2.0 adds an optional app-managed bridge through the system ippeveprinter/ippeveps tools, forwarding to the existing CUPS queue rather than replacing the driver with a standalone Printer Application. See SHARING.md for lifecycle, network policy and pending iOS acceptance.
 
 References: [Printer MIB](https://www.rfc-editor.org/rfc/rfc3805.html), [Host Resources MIB](https://www.rfc-editor.org/rfc/rfc2790.html), [Ghostscript](https://ghostscript.com/), [upstream foo2zjs](http://foo2zjs.rkkda.com/).

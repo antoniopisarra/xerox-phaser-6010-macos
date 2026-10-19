@@ -37,9 +37,13 @@ final class PrinterRow: NSTableRowView {
 }
 final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NSTableViewDelegate {
   var window: NSWindow!
+  let airPrintBridge = AirPrintBridge()
+  let airPrintStatus = NSTextField(wrappingLabelWithString: "")
+  var airPrintToggle: NSButton!
+
   let accent = NSColor(calibratedRed: 0.02, green: 0.43, blue: 0.49, alpha: 1)
   let ink = NSColor(calibratedRed: 0.08, green: 0.19, blue: 0.25, alpha: 1)
-  var connection: NSView!, calibration: NSView!, statusPage: NSView!
+  var connection: NSView!, calibration: NSView!, statusPage: NSView!, airPrintPage: NSView!
   let printerState = NSTextField(labelWithString: L("Nessun aggiornamento"))
   let statusDetail = NSTextField(
     wrappingLabelWithString: L("Seleziona la stampante nella sezione Stampante."))
@@ -137,7 +141,10 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
     let third = button(side, L("Stato e toner"), 18, 375, 184, #selector(showStatus))
     third.image = NSImage(systemSymbolName: "drop.fill", accessibilityDescription: nil)
     third.imagePosition = .imageLeading
-    nav = [first, second, third]
+    let fourth = button(side, "AirPrint", 18, 325, 184, #selector(showAirPrint))
+    fourth.image = NSImage(systemSymbolName: "wifi", accessibilityDescription: nil)
+    fourth.imagePosition = .imageLeading
+    nav = [first, second, third, fourth]
     label(
       side, L("Driver indipendente\nNon ufficiale Xerox"), 24, 77, 174, 11, false,
       .secondaryLabelColor
@@ -149,9 +156,12 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
     root.addSubview(connection)
     root.addSubview(calibration)
     root.addSubview(statusPage)
+    airPrintPage = NSView(frame: connection.frame)
+    root.addSubview(airPrintPage)
     buildConnection()
     buildCalibration()
     buildStatus()
+    buildAirPrint()
     showConnection()
     window.center()
     if isPreview {
@@ -394,9 +404,75 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
     label(
       tools,
       L(
-        "Condivisione con altri computer.\nAirPrint per iPhone e iPad non incluso in questa versione."
+        "Condivisione standard di macOS.\nPer iPhone e iPad apri la sezione AirPrint."
       ),
       252, 12, 450, 11, false, .secondaryLabelColor)
+  }
+  func buildAirPrint() {
+    label(airPrintPage, L("Stampa dal tuo iPhone."), 28, 684, 710, 29, true)
+    label(
+      airPrintPage, L("Il Mac fa da ponte tra iPhone o iPad e la Xerox Ethernet."), 28, 640, 710,
+      13, false, .secondaryLabelColor)
+    let card = Surface(NSRect(x: 28, y: 419, width: 724, height: 195), color: .white)
+    airPrintPage.addSubview(card)
+    label(card, "AirPrint", 20, 140, 680, 22, true)
+    airPrintStatus.frame = NSRect(x: 20, y: 62, width: 680, height: 67)
+    airPrintStatus.font = .systemFont(ofSize: 14)
+    airPrintStatus.textColor = .secondaryLabelColor
+    card.addSubview(airPrintStatus)
+    airPrintToggle = button(
+      card, L("Attiva AirPrint"), 451, 16, 253, #selector(toggleAirPrint), true)
+    let guide = Surface(NSRect(x: 28, y: 140, width: 724, height: 260), color: .white)
+    airPrintPage.addSubview(guide)
+    label(guide, L("Come trovarla su iPhone e iPad"), 20, 204, 680, 18, true)
+    let instructions = label(
+      guide,
+      L(
+        "1. Collega iPhone e Mac alla stessa rete locale.\n2. Attiva AirPrint e lascia aperta questa app sul Mac.\n3. Su iPhone: Condividi → Stampa → Seleziona stampante.\n4. Scegli Xerox Phaser 6010N via Mac."
+      ), 20, 78, 680, 14)
+    instructions.frame.size.height = 118
+    let note = label(
+      guide,
+      L(
+        "Chi può raggiungere questo Mac in rete può inviare stampe. Usa una rete fidata. Il Mac deve restare acceso; chiudendo l’app la condivisione si arresta."
+      ), 20, 12, 680, 12, false, .secondaryLabelColor)
+    note.frame.size.height = 60
+    let acceptance = label(
+      airPrintPage,
+      L(
+        "Da verificare con il tuo iPhone: i test locali PDF e Apple Raster sono passati, ma la stampa reale da iOS richiede ancora una prova."
+      ), 29, 53, 710, 12, false, .secondaryLabelColor)
+    acceptance.frame.size.height = 65
+    airPrintBridge.onChange = { [weak self] _ in self?.updateAirPrint() }
+    updateAirPrint()
+  }
+  @objc func showAirPrint() { selectPage(3) }
+  func updateAirPrint() {
+    switch airPrintBridge.state {
+    case .stopped:
+      airPrintStatus.stringValue = L(
+        "AirPrint disattivato. Premi Attiva AirPrint per condividere la Xerox.")
+    case .starting: airPrintStatus.stringValue = L("Avvio del servizio e verifica IPP in corso…")
+    case .running:
+      airPrintStatus.stringValue = L(
+        "AirPrint attivo: Xerox Phaser 6010N via Mac. Ora selezionala sull’iPhone.")
+    case .stopping: airPrintStatus.stringValue = L("Arresto della condivisione in corso…")
+    case .failed:
+      airPrintStatus.stringValue = L(
+        "Servizio non disponibile. Controlla la coda Phaser6010, la rete locale e che la porta 8631 sia libera, poi riprova."
+      )
+    }
+    let busy = airPrintBridge.state == .starting || airPrintBridge.state == .stopping
+    airPrintToggle.isEnabled = !busy
+    airPrintToggle.title =
+      airPrintBridge.state == .running ? L("Disattiva AirPrint") : L("Attiva AirPrint")
+  }
+  @objc func toggleAirPrint() {
+    if airPrintBridge.state == .running {
+      airPrintBridge.stop()
+      return
+    }
+    do { try airPrintBridge.start() } catch { alert(error.localizedDescription) }
   }
   @objc func refreshStatus() {
     guard !refreshing else { return }
@@ -514,6 +590,7 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
     connection.isHidden = index != 0
     calibration.isHidden = index != 1
     statusPage.isHidden = index != 2
+    airPrintPage.isHidden = index != 3
     for (i, b) in nav.enumerated() {
       b.bezelColor = i == index ? accent : nil
       b.contentTintColor = i == index ? .white : .controlTextColor
@@ -674,10 +751,12 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
       alert(L("Il driver non risulta installato."))
       return
     }
+    airPrintBridge.shutdown()
     if let error = authorize("/bin/bash /Library/Printers/Phaser6010/uninstall.sh") {
       alert(error)
       return
     }
+    airPrintBridge.shutdown()
     NSApp.terminate(nil)
   }
   func alert(_ text: String) {
@@ -692,6 +771,7 @@ final class Delegate: NSObject, NSApplicationDelegate, NSTableViewDataSource, NS
   }
   func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
   func applicationWillTerminate(_ notification: Notification) {
+    airPrintBridge.shutdown()
     discovery.stop()
     refreshTimer?.invalidate()
   }
