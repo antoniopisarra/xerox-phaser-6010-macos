@@ -15,12 +15,14 @@ Il progetto è destinato ai Mac Apple Silicon delle famiglie **M1, M2, M3, M4, M
 ## Installazione e prima stampa
 
 1. Collega la stampante al router tramite cavo Ethernet e accendila.
-2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.0.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e completa l'installazione guidata.
+2. Scarica `Driver-Xerox-Phaser-6010N-macOS-1.1.0.pkg` dalla pagina [Release](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), aprilo e scegli la lingua dell'utility nella schermata di personalizzazione: seleziona **English interface** per inglese, oppure lascialo deselezionato per italiano. Completa l'installazione guidata.
 3. Apri **Configura Xerox Phaser 6010N** dalla cartella **Applicazioni**.
 4. Consenti l'accesso alla rete locale se macOS lo richiede. Seleziona la stampante trovata oppure inserisci il suo indirizzo IPv4, quindi aggiungi/aggiorna la stampante. macOS chiederà l'autorizzazione di un amministratore per configurare la coda.
 5. Dal normale pannello di stampa scegli **Xerox Phaser 6010N**. Sono previsti A4 o Letter, carta normale, colori o scala di grigi, solo fronte.
 
 Il pacchetto attuale **non ha firma Apple Developer ID e non è notarizzato**. L'app ha una firma ad hoc per l'integrità del contenuto, che non identifica uno sviluppatore verificato da Apple. Gatekeeper può bloccare il pacchetto scaricato: se ti fidi di questa release, usa la procedura macOS **Privacy e sicurezza → Apri comunque**, quando disponibile. Le regole di un Mac aziendale possono impedirlo. Non disattivare globalmente Gatekeeper. La notarizzazione è il controllo Apple per la distribuzione del software, distinto dal corretto funzionamento della stampa.
+
+La scelta della lingua vale per tutti gli utenti del Mac e si applica al successivo avvio dell'app. Puoi cambiarla reinstallando; i pannelli di sistema seguono la lingua di macOS.
 
 ## Le tre sezioni dell'applicazione
 
@@ -52,7 +54,7 @@ Il progetto conserva l'encoder C `foo2hbpl1` già funzionante e corregge un acce
 
 Sono stati corretti la gestione dei file temporanei nel sandbox di stampa e l'adattamento forzato dei PDF che ingrandiva le pagine. Le correzioni di calibrazione vengono applicate una volta per pagina. L'utility nativa AppKit aggiunge ricerca di rete, configurazione della coda, toner, diagnostica con dati ridotti, fogli bilingui e icona. L'installer impedisce che una vecchia copia di sviluppo dell'app intercetti l'installazione.
 
-La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. Una IPP Printer Application è una possibile evoluzione futura, non inclusa. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
+La stampa usa l'interfaccia legacy PPD/filtro di CUPS disponibile nella versione macOS provata. È iniziato lo sviluppo di un [ponte AirPrint](airprint/README.md), disponibile come prototipo nei sorgenti: questo installer non abilita la condivisione. Cambiamenti futuri del sistema di stampa macOS potrebbero richiedere aggiornamenti.
 
 ## Sorgenti, compilazione e verifiche
 

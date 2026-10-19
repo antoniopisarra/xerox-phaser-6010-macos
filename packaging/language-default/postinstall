@@ -1,0 +1,6 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-2.0-or-later
+set -euo pipefail
+# Exactly one language component is selected by the distribution.
+/usr/bin/printf 'it\n' > /Library/Printers/Phaser6010/interface-language
+/bin/chmod 644 /Library/Printers/Phaser6010/interface-language

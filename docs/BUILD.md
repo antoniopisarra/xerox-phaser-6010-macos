@@ -8,7 +8,7 @@ Use Apple Silicon and macOS 26+, with Xcode or Command Line Tools selected by `x
 4. Run the checks in TESTING.md.
 5. `./packaging/package.sh` builds the versioned package in `dist/`. It includes corresponding source and audits Mach-O dependencies for developer/Homebrew paths. It uses a non-relocatable application component and root-owned payload.
 
-`VERSION` determines application and package versions. The minimum OS is 26.0. The application uses the host Swift toolchain; build only on ARM64. Packages have no installation script that prints, creates a queue or overwrites calibration. The user configures the queue in the app after installation.
+`VERSION` determines application and package versions. The minimum OS is 26.0. The application uses the host Swift toolchain; build only on ARM64. Two mutually exclusive, script-only language components write the chosen interface language (Italian by default, English when selected). Packages do not print, create a queue or overwrite calibration. The user configures the queue in the app after installation.
 
 ## Assets
 

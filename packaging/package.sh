@@ -28,7 +28,7 @@ cp packaging/uninstall.sh "$dest/"
 cp packaging/Phaser6010.ppd "$dest/"
 cp -R vendor/ghostscript "$dest/gs"
 mkdir -p "$dest/licenses/project-source"
-cp -R src filter app design packaging scripts tests docs README.md README.it.md LICENSE VERSION CHANGELOG.md "$dest/licenses/project-source/"
+cp -R src filter app airprint design packaging scripts tests docs README.md README.it.md LICENSE VERSION CHANGELOG.md "$dest/licenses/project-source/"
 cp -R vendor/original-encoder "$dest/licenses/"
 cp -R vendor/corresponding-source "$dest/licenses/"
 cp vendor/THIRD-PARTY-NOTICES vendor/COPYING-foo2hbpl1 vendor/LICENSE-Ghostscript vendor/COPYING-Ghostscript-AGPL vendor/DroidSansFallback.NOTICE "$dest/licenses/"
@@ -44,5 +44,8 @@ pkgbuild --analyze --root "$root" build/components.plist
 /usr/bin/plutil -replace 0.BundleHasStrictIdentifier -bool YES build/components.plist
 pkgbuild --component-plist build/components.plist --ownership recommended --root "$root" --identifier org.community.phaser6010 --version "$version" --install-location / build/Phaser6010-component.pkg
 
-sed "s/version=\"1.0.0\"/version=\"$version\"/" packaging/Distribution.xml > build/Distribution.xml
+pkgbuild --nopayload --scripts packaging/language-default --identifier org.community.phaser6010.language.italian --version "$version" build/Phaser6010-Italian.pkg
+pkgbuild --nopayload --scripts packaging/language-english --identifier org.community.phaser6010.language.english --version "$version" build/Phaser6010-English.pkg
+
+sed "s/version=\"1.1.0\"/version=\"$version\"/" packaging/Distribution.xml > build/Distribution.xml
 productbuild --distribution build/Distribution.xml --resources packaging/resources --package-path build "dist/Driver-Xerox-Phaser-6010N-macOS-$version.pkg"

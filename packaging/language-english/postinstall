@@ -1,0 +1,5 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-2.0-or-later
+set -euo pipefail
+/usr/bin/printf 'en\n' > /Library/Printers/Phaser6010/interface-language
+/bin/chmod 644 /Library/Printers/Phaser6010/interface-language

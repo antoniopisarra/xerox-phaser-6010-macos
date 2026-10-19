@@ -74,3 +74,21 @@ precondition(!report.contains(NSUserName()))
 print(
   "PASS: toner percentages; unknown values; invalid response handling; private-data-free diagnostics."
 )
+
+precondition(AppLanguage.resolve(selection: "en\n", preferred: "it-IT") == "en")
+precondition(AppLanguage.resolve(selection: "it\n", preferred: "en-US") == "it")
+precondition(AppLanguage.resolve(selection: "invalid", preferred: "it-IT") == "it")
+let oldLanguage = UserDefaults.standard.object(forKey: "interfaceLanguage")
+UserDefaults.standard.set("en", forKey: "interfaceLanguage")
+precondition(L("Stampante") == "Printer")
+precondition(L("Calibrazione") == "Calibration")
+precondition(
+  L("Orizzontale: − sinistra / + destra   ·   Verticale: − alto / + basso").contains("+ down"))
+UserDefaults.standard.set("it", forKey: "interfaceLanguage")
+precondition(L("Stampante") == "Stampante")
+if let oldLanguage {
+  UserDefaults.standard.set(oldLanguage, forKey: "interfaceLanguage")
+} else {
+  UserDefaults.standard.removeObject(forKey: "interfaceLanguage")
+}
+print("PASS: installed language parsing, locale fallback, English/Italian UI translation.")

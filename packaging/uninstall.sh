@@ -8,3 +8,6 @@ if [[ -f /etc/cups/ppd/Phaser6010.ppd ]]; then
 fi
 /bin/rm -rf /Library/Printers/Phaser6010 '/Applications/Configura Xerox Phaser 6010N.app'
 /usr/sbin/pkgutil --forget org.community.phaser6010 >/dev/null
+
+/usr/sbin/pkgutil --forget org.community.phaser6010.language.italian >/dev/null 2>&1 || true
+/usr/sbin/pkgutil --forget org.community.phaser6010.language.english >/dev/null 2>&1 || true

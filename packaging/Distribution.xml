@@ -3,10 +3,14 @@
  <title>Driver Xerox Phaser 6010N per Mac</title>
  <welcome file="Welcome.html"/>
  <readme file="ReadMe.html"/>
- <options customize="never" require-scripts="false" hostArchitectures="arm64"/>
+ <options customize="always" require-scripts="true" hostArchitectures="arm64"/>
  <volume-check><allowed-os-versions><os-version min="26.0"/></allowed-os-versions></volume-check>
  <domains enable_localSystem="true" enable_currentUserHome="false" enable_anywhere="false"/>
- <choices-outline><line choice="driver"/></choices-outline>
+ <choices-outline><line choice="driver"/><line choice="italian"/><line choice="english"/></choices-outline>
  <choice id="driver" title="Driver e utility Xerox Phaser 6010N" visible="false"><pkg-ref id="org.community.phaser6010"/></choice>
- <pkg-ref id="org.community.phaser6010" version="1.0.0" onConclusion="none">Phaser6010-component.pkg</pkg-ref>
+ <choice id="italian" title="Italiano" visible="false" selected="!choices.english.selected"><pkg-ref id="org.community.phaser6010.language.italian"/></choice>
+ <pkg-ref id="org.community.phaser6010.language.italian" version="1.1.0" onConclusion="none">Phaser6010-Italian.pkg</pkg-ref>
+ <choice id="english" title="English interface / Interfaccia inglese" description="Select for English. Leave unchecked for Italiano. / Seleziona per inglese; lascia deselezionato per italiano." start_selected="false"><pkg-ref id="org.community.phaser6010.language.english"/></choice>
+ <pkg-ref id="org.community.phaser6010.language.english" version="1.1.0" onConclusion="none">Phaser6010-English.pkg</pkg-ref>
+ <pkg-ref id="org.community.phaser6010" version="1.1.0" onConclusion="none">Phaser6010-component.pkg</pkg-ref>
 </installer-gui-script>

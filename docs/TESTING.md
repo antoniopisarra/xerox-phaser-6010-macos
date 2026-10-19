@@ -27,3 +27,9 @@ The final 1.0.0 interface cannot be visually accepted through this automation en
 6. Export diagnostic text and inspect it before sharing. Open printer/settings/sharing buttons. Check uninstall with an empty queue, and verify unrelated printers remain.
 
 Other Apple Silicon chips, Intel, USB, AirPrint and future macOS releases have not been physically tested. Intel/USB/AirPrint are outside the release scope; the M-series ARM64 build target does not assert a test on every model.
+
+## 1.1.0 additions
+
+Language selection parsing and Italian/English UI strings are covered by core tests; `python3 tests/localization.py` checks translation coverage for every static UI localization key. Installer package choices select exactly one script-only language component; the selected language is stored in the root-owned driver directory and used at application launch. A Mac GUI installation is still required to verify the customization page and both language layouts: the local installer inspection tool could not locate the target volume in this execution environment. System print/security dialogs follow macOS's own language.
+
+The AirPrint source prototype passed local IPP attribute queries and dry-run PDF/URF conversion without printing. It is not activated by the installer. See airprint/README.md for remaining physical iOS and service lifecycle work.

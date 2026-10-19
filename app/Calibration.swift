@@ -45,24 +45,25 @@ struct Calibration: Equatable {
     var c = self
     for v in [width, height].compactMap({ $0 }) {
       guard v.isFinite, (50...150).contains(v) else {
-        throw CalibrationError("Il lato del quadrato deve essere compreso tra 50 e 150 mm.")
+        throw CalibrationError(L("Il lato del quadrato deve essere compreso tra 50 e 150 mm."))
       }
     }
     for v in [left, right, top, bottom].compactMap({ $0 }) {
       guard v.isFinite, (0...50).contains(v) else {
-        throw CalibrationError("I margini devono essere compresi tra 0 e 50 mm.")
+        throw CalibrationError(L("I margini devono essere compresi tra 0 e 50 mm."))
       }
     }
     if let w = width { c.scaleX = scaleX * 100 / w }
     if let h = height { c.scaleY = scaleY * 100 / h }
     if (left == nil) != (right == nil) || (top == nil) != (bottom == nil) {
-      throw CalibrationError("Inserisci entrambi i margini della stessa coppia.")
+      throw CalibrationError(L("Inserisci entrambi i margini della stessa coppia."))
     }
     if let l = left, let r = right { c.x += (r - l) / 2 }
     if let t = top, let b = bottom { c.y += (t - b) / 2 }
     guard c.valid else {
       throw CalibrationError(
-        "Correzione fuori intervallo: massimo 20 mm e scala tra 50% e 150%. Controlla le misure.")
+        L("Correzione fuori intervallo: massimo 20 mm e scala tra 50% e 150%. Controlla le misure.")
+      )
     }
     return c
   }

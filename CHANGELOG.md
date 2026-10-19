@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+
+- Italian/English utility interface, selected during installation; applies to every user of the Mac.
+- Translated pages, menus, status messages, validation errors and accessibility printer labels.
+- Calibration PDF defaults to the selected interface language; its separate language selector remains available.
+- Corrected the vertical direction hint to match the implemented positive-down calibration.
+- Initial AirPrint bridge research/prototype is documented separately; no automatic network sharing is enabled.
+
 ## 1.0.0
 
 - Native ARM64 installer and AppKit setup utility for Ethernet Xerox Phaser 6010N, macOS 26+.

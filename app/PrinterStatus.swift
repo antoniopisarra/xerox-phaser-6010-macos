@@ -11,7 +11,7 @@ enum SystemCommand {
   {
     guard FileManager.default.isExecutableFile(atPath: path) else {
       throw CalibrationError(
-        "Componente di macOS non disponibile: \(URL(fileURLWithPath:path).lastPathComponent)")
+        L("Componente di macOS non disponibile: ") + URL(fileURLWithPath: path).lastPathComponent)
     }
     let process = Process()
     process.executableURL = URL(fileURLWithPath: path)
@@ -29,7 +29,7 @@ enum SystemCommand {
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     process.waitUntilExit()
     watchdog.cancel()
-    guard data.count <= 262144 else { throw CalibrationError("Risposta troppo grande.") }
+    guard data.count <= 262144 else { throw CalibrationError(L("Risposta troppo grande.")) }
     return CommandResult(
       status: process.terminationStatus, text: String(decoding: data, as: UTF8.self))
   }
@@ -56,7 +56,7 @@ struct PrinterSnapshot: Codable {
         in: CharacterSet(charactersIn: "\""))
     }
     guard lines.count == 14, isPhaser6010(lines[0]) else {
-      throw CalibrationError("La risposta non identifica una Xerox Phaser 6010N compatibile.")
+      throw CalibrationError(L("La risposta non identifica una Xerox Phaser 6010N compatibile."))
     }
     let state: String
     switch Int(lines[1]) {
@@ -79,7 +79,7 @@ struct PrinterSnapshot: Codable {
   }
   static func fetch(ip: String) throws -> PrinterSnapshot {
     guard let address = normalizedIPv4(ip) else {
-      throw CalibrationError("Inserisci un indirizzo IPv4 valido.")
+      throw CalibrationError(L("Inserisci un indirizzo IPv4 valido."))
     }
     let identity = [".1.3.6.1.2.1.25.3.2.1.3.1", ".1.3.6.1.2.1.25.3.5.1.1.1"]
     var supplies: [String] = []
@@ -97,7 +97,9 @@ struct PrinterSnapshot: Codable {
         timeout: 4)
       guard result.status == 0 else {
         throw CalibrationError(
-          "Stato non disponibile. La stampante potrebbe non rispondere alle richieste di monitoraggio."
+          L(
+            "Stato non disponibile. La stampante potrebbe non rispondere alle richieste di monitoraggio."
+          )
         )
       }
       response += result.text
@@ -107,10 +109,10 @@ struct PrinterSnapshot: Codable {
   }
   var title: String {
     switch state {
-    case "ready": return "Pronta"
-    case "printing": return "Stampa in corso"
-    case "warming": return "Riscaldamento"
-    default: return "Raggiungibile"
+    case "ready": return L("Pronta")
+    case "printing": return L("Stampa in corso")
+    case "warming": return L("Riscaldamento")
+    default: return L("Raggiungibile")
     }
   }
   var lowColors: [String] { toners.filter { ($0.percent ?? 101) <= 10 }.map(\.color) }

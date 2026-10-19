@@ -15,18 +15,20 @@ The target is Apple Silicon Macs — M1, M2, M3, M4, M5 and M6 families — runn
 ## Install and print
 
 1. Connect the printer by Ethernet to your router and turn it on.
-2. Download `Driver-Xerox-Phaser-6010N-macOS-1.0.0.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and finish the installation.
-3. Open **Configura Xerox Phaser 6010N** in **Applications**. The utility interface is currently Italian.
+2. Download `Driver-Xerox-Phaser-6010N-macOS-1.1.0.pkg` from [Releases](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest), open it and choose the utility language on the customization page, then finish the installation.
+3. Open **Configura Xerox Phaser 6010N** in **Applications**. Choose Italian or English during installation: check **English interface** for English, or leave it unchecked for Italian.
 4. Allow local network access if macOS requests it. Select a discovered printer, or enter its IPv4 address, and add/update the printer. macOS requests administrator authorization to change the print queue.
 5. Select **Xerox Phaser 6010N** in the usual macOS print dialog. Use A4 or Letter, plain paper, color or grayscale, single-sided printing.
 
 The current installer is **not signed with an Apple Developer ID and is not notarized**. The application has an ad hoc integrity signature, which does not identify a verified developer. Gatekeeper may block the downloaded package. If you trust this project's release, follow macOS's **Privacy & Security → Open Anyway** procedure when offered. Organization policies may prevent installation. Do not disable Gatekeeper globally. Notarization is Apple's distribution security check; it is separate from successful printer testing.
 
+The language choice applies to all users and takes effect at the next launch. Reinstall to change it; macOS system dialogs follow the system language.
+
 ## The three pages
 
-- **Stampante:** network discovery, manual IPv4 entry, queue creation/update and access to macOS printer settings.
-- **Stato e toner:** printer state and cyan/magenta/yellow/black levels, manual refresh and automatic refresh every 30 seconds while this page is visible; printer web page, sharing settings and a diagnostic report export.
-- **Calibrazione:** Italian/English calibration PDF, a print button, horizontal/vertical offsets, independent width/height corrections and a calculator based on actual paper measurements.
+- **Printer / Stampante:** network discovery, manual IPv4 entry, queue creation/update and access to macOS printer settings.
+- **Status and toner / Stato e toner:** printer state and cyan/magenta/yellow/black levels, manual refresh and automatic refresh every 30 seconds while this page is visible; printer web page, sharing settings and a diagnostic report export.
+- **Calibration / Calibrazione:** Italian/English calibration PDF, a print button, horizontal/vertical offsets, independent width/height corrections and a calculator based on actual paper measurements.
 
 Real application screenshots will be added after capture on the test Mac. See [screenshot instructions](docs/screenshots/README.md).
 
@@ -52,7 +54,7 @@ The project retains the proven `foo2hbpl1` C encoder, adds a page-tail memory bo
 
 The pipeline fixes the sandbox-sensitive temporary-file parsing and removes forced PDF fit-to-page behavior. Calibration is applied once per page. The native AppKit utility adds discovery, queue setup, toner monitoring, privacy-conscious diagnostics, bilingual calibration sheets and an application icon. The installer disables bundle relocation so an old development copy cannot capture the installation.
 
-This uses the legacy CUPS PPD/filter interface available on the tested macOS release. An IPP Printer Application is a possible future migration, not part of this release. Future macOS printing changes may require updates.
+This uses the legacy CUPS PPD/filter interface available on the tested macOS release. An [AirPrint bridge prototype](airprint/README.md) is now available as development source; network sharing is not enabled by this installer. Future macOS printing changes may require updates.
 
 ## Source, build and verification
 

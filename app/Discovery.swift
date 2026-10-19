@@ -123,7 +123,7 @@ enum SNMPIdentity {
           var addr = source.sin_addr
           if inet_ntop(AF_INET, &addr, &bytes, socklen_t(bytes.count)) != nil {
             let printer = DiscoveredPrinter(
-              name: name, ip: String(cString: bytes), source: "Rilevata in rete")
+              name: name, ip: String(cString: bytes), source: L("Rilevata in rete"))
             DispatchQueue.main.async { found(printer) }
           }
         }
@@ -201,7 +201,7 @@ final class PrinterDiscovery: NSObject, NetServiceBrowserDelegate, NetServiceDel
         return String(cString: bytes)
       }
       if let ip = ip {
-        printers[ip] = DiscoveredPrinter(name: sender.name, ip: ip, source: "Rilevata in rete")
+        printers[ip] = DiscoveredPrinter(name: sender.name, ip: ip, source: L("Rilevata in rete"))
         publish()
       }
     }
