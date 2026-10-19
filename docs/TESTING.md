@@ -41,3 +41,8 @@ The GUI controller is tested directly by `./tests/bridge.sh`, using a private fi
 ## 1.2.1 negotiation regression
 
 The owner reproduced an iPhone Waiting/Printing loop against the macOS executable. Read-only job history showed no accepted jobs. Standard A4 media-col validation failed because rounded PPD dimensions exported 20990 × 29704 rather than 21000 × 29700; corrected dimensions now pass tests/airprint-validate-a4.test. A temporary private IPP server then accepted the owner's iPhone Create-Job/Send-Document and completed conversion; the owner confirmed the iPhone queue cleared. This diagnostic mode did not forward the document to the printer. The final private server build also passes A4 validation, chunked create/send, controller stop/restart and PDF/URF conversion checks. The owner subsequently uninstalled the older package, installed 1.2.1 and confirmed that physical printing from the iPhone worked perfectly. This verifies that reported scenario on the owner's setup; it does not establish every iOS version, paper/copy combination or Mac client.
+
+
+## 1.3.0 physical acceptance update — 19 October 2026
+
+The owner confirmed that the iPhone discovers the printer and physically prints while the Mac is locked (lock screen, with the user still logged in). Closing the MacBook lid interrupted sharing in the tested setup. Locking the screen is distinct from logging out or suspending the system. This report does not separately confirm operation with the setup app fully quit, restart after login, display-off duration or new paper/copy combinations. The supplied 1.3.0 screenshot shows AirPrint enabled and is preserved in docs/screenshots/airprint.png.

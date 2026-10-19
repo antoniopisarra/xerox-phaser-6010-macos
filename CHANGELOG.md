@@ -2,6 +2,8 @@
 
 ## 1.3.0
 
+- Owner acceptance update: iPhone discovery and physical printing confirmed with the Mac locked; closing the MacBook lid interrupts sharing in the tested setup. Added the current AirPrint screenshot.
+
 - AirPrint now runs through an opt-in per-user LaunchAgent: survives closing the utility and restarts at login; Disable removes the agent. Prevents idle system sleep while allowing display sleep.
 - Disabled server-side Print-URI/Send-URI, sample HTML job pages and fictitious supplies; redacted job titles/users in IPP responses.
 - Excluded Mac AirPrint bridges from direct-hardware discovery; invalidated stale discovery callbacks on stop.

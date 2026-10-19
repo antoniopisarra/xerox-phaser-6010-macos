@@ -13,3 +13,8 @@ Reachable clients can submit jobs without authentication. Do not expose TCP 8631
 The private IPP executable has an ad hoc integrity signature; it is not an Apple certification claim. The macOS converter and libraries are used without modification. Local IPP discovery/capability queries, PDF/URF conversion and app-controller lifecycle tests are separate from physical iPhone/iPad acceptance. The owner confirmed successful physical printing from the iPhone after removing the older package and installing 1.2.1. Other client/option combinations remain to be tested. If the printer does not appear, check same-network Wi-Fi, guest/client isolation, local-network permissions, firewall and whether another process already uses port 8631.
 
 The old Mac sharing button remains available for standard macOS Printer Sharing, independently of this bridge. Additional design and development instructions are in [airprint/README.md](../airprint/README.md).
+
+
+## 1.3.0 physical acceptance update — 19 October 2026
+
+The owner confirmed that the iPhone discovers the printer and physically prints while the Mac is locked (lock screen, with the user still logged in). Closing the MacBook lid interrupted sharing in the tested setup. Locking the screen is distinct from logging out or suspending the system. This report does not separately confirm operation with the setup app fully quit, restart after login, display-off duration or new paper/copy combinations. The supplied 1.3.0 screenshot shows AirPrint enabled and is preserved in docs/screenshots/airprint.png.

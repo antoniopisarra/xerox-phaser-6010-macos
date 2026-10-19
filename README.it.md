@@ -10,7 +10,7 @@ La Xerox Phaser 6010N è una stampante ancora valida, ma il suo software origina
 
 Il progetto è destinato ai Mac Apple Silicon delle famiglie **M1, M2, M3, M4, M5 e M6**, con **macOS 26 o successivo**. È il requisito dell'architettura ARM64: non significa che ogni modello o futura versione di macOS sia stato provato fisicamente. La stampa è stata verificata su un Mac Apple Silicon con versione del sistema riportata come macOS 26.6.2. La [pagina dei test](docs/TESTING.md) distingue le verifiche eseguite da quelle ancora necessarie. Per il supporto del produttore consulta i [download ufficiali Xerox](https://www.support.xerox.com/en-us/product/phaser-6010/downloads).
 
-**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel o altri modelli di stampante. La stampa fisica da iPhone è confermata con la 1.2.1; la nuova gestione in background della 1.3.0 richiede la verifica dopo installazione, descritta sotto.
+**È supportata esclusivamente la Phaser 6010N collegata tramite Ethernet.** Il Mac può essere connesso in Wi-Fi alla stessa rete locale. Questa versione non supporta USB, Mac Intel o altri modelli di stampante. Con la 1.3.0 l’autore ha confermato rilevamento e stampa da iPhone con il Mac bloccato. Chiudendo il coperchio del MacBook la condivisione si interrompe nella configurazione provata. Dettagli sotto.
 
 ## Installazione e prima stampa
 
@@ -49,9 +49,9 @@ Immagini reali della versione 1.1.0 installata sul Mac di prova, con interfaccia
 
 **AirPrint — condivisione con iPhone e iPad**
 
-![Attivazione AirPrint e istruzioni iPhone, prima della versione 1.3.0](docs/screenshots/airprint.png)
+![AirPrint attivo nella versione 1.3.0](docs/screenshots/airprint.png)
 
-Questa schermata precede la 1.3.0: l’obbligo di tenere aperta l’app e l’avviso sulla prova iOS sono storici. Nella 1.3.0 il servizio in background permette di chiudere l’app; la stampa fisica da iPhone è stata confermata con la 1.2.1.
+Schermata originale della versione 1.3.0 con AirPrint attivo, fornita dall’autore. Rilevamento e stampa da iPhone sono confermati con il Mac bloccato; chiudendo il coperchio del MacBook la condivisione si interrompe nella configurazione provata.
 
 I valori di IP, toner e calibrazione mostrati sono quelli del Mac di prova, non impostazioni da copiare. [Dettagli delle immagini](docs/screenshots/README.md).
 
@@ -113,4 +113,4 @@ Grazie agli autori di foo2hbpl1/foo2zjs, ai collaboratori Ghostscript e a chi ha
 
 ## Revisione dettagliata del codice
 
-La [revisione del 19 ottobre](docs/REVIEW-2026-10-19.md) documenta difetti confermati, correzioni, misure e verifiche ancora necessarie. Il servizio in background della 1.3.0 e i nuovi percorsi di carta/copie richiedono una prova fisica dopo l’installazione.
+La [revisione del 19 ottobre](docs/REVIEW-2026-10-19.md) documenta difetti confermati, correzioni, misure e verifiche ancora necessarie. Con la 1.3.0 sono confermati rilevamento e stampa da iPhone con il Mac bloccato. App chiusa, riavvio all’accesso e nuove combinazioni carta/copie richiedono verifiche separate.

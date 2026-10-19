@@ -1,21 +1,18 @@
-# Application screenshots / Schermate dell'app
+# Application screenshots / Schermate dell’app
 
-Three original screenshots supplied by the project owner on 19 October 2026, after installing version 1.1.0 on the test Mac. The interface language is English. These are actual running-application captures, not generated mockups. The original images are preserved without editing.
+Original owner-supplied captures from 19 October 2026, preserved without editing. Printer, toner and calibration show version 1.1.0; AirPrint shows version 1.3.0. All use the English interface; Italian is also supported.
 
-Tre schermate originali fornite dall'autore il 19 ottobre 2026 dopo l'installazione della versione 1.1.0 sul Mac di prova, con interfaccia inglese. Sono acquisizioni reali dell'app in esecuzione, conservate senza modifiche.
+Schermate originali fornite dall’autore il 19 ottobre 2026, conservate senza modifiche. Stampante, toner e calibrazione mostrano la 1.1.0; AirPrint mostra la 1.3.0. Interfaccia inglese; è disponibile anche l’italiano.
 
 | File | English | Italiano |
 | --- | --- | --- |
-| [printer.png](printer.png) | Network printer discovered and selected; manual IP entry | Stampante trovata e selezionata; inserimento IP manuale |
-| [status-toner.png](status-toner.png) | Ready state, updated toner levels and tools | Stato pronta, toner aggiornati e strumenti |
-| [calibration.png](calibration.png) | Measurement fields, saved corrections, PDF language and print button | Misure, correzioni salvate, lingua PDF e pulsante stampa |
+| [printer.png](printer.png) | Discovery and IP setup | Ricerca e configurazione IP |
+| [status-toner.png](status-toner.png) | State and live toner estimates | Stato e stime toner aggiornate |
+| [calibration.png](calibration.png) | Measurements and correction controls | Misure e correzioni |
+| [airprint.png](airprint.png) | AirPrint enabled, version 1.3.0 | AirPrint attivo, versione 1.3.0 |
 
-The private LAN IP, toner percentages and calibration values shown are specific to this setup. They are not defaults or instructions to copy. The screenshots confirm visible English layouts and live status, not that every button or physical printing scenario has been tested.
+The owner separately confirmed iPhone discovery and physical printing with the Mac locked on 1.3.0. Closing the MacBook lid interrupted sharing in the tested setup. These reports do not establish app-closed operation, login restart or every paper/copy combination.
 
-IP locale, percentuali toner e calibrazione sono specifici della configurazione di prova: non sono valori predefiniti da copiare. Le immagini documentano l'interfaccia inglese e lo stato aggiornato; non attestano da sole la verifica di ogni pulsante o scenario di stampa.
+L’autore ha confermato separatamente rilevamento e stampa fisica da iPhone con il Mac bloccato sulla 1.3.0. Chiudendo il coperchio del MacBook la condivisione si interrompe nella configurazione provata. Queste prove non attestano app chiusa, riavvio all’accesso o ogni combinazione carta/copie.
 
-## AirPrint capture / Schermata AirPrint
-
-[airprint.png](airprint.png) is an additional original owner-supplied capture from before 1.3.0, preserved without editing. Its keep-app-open and pending-iOS-test instructions are historical: 1.3.0 introduces the background agent; physical iPhone printing was confirmed with 1.2.1.
-
-La schermata AirPrint originale precede la 1.3.0 ed è conservata senza modifiche. L’obbligo di tenere aperta l’app e la prova iOS ancora da svolgere sono indicazioni storiche: la 1.3.0 introduce il servizio in background; la stampa fisica da iPhone era già confermata con la 1.2.1.
+IP, toner and calibration values belong to the test setup and are not defaults to copy. IP, toner e calibrazione appartengono alla configurazione di prova e non sono valori predefiniti da copiare.

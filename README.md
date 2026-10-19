@@ -10,7 +10,7 @@ The Xerox Phaser 6010N can still print well, but its original software belongs t
 
 The target is Apple Silicon Macs — M1, M2, M3, M4, M5 and M6 families — running **macOS 26 or later**. This describes the ARM64 build target, not a physical test on every chip or future macOS release. Printing was physically tested on an Apple Silicon Mac reported as macOS 26.6.2. See [testing](docs/TESTING.md) for the distinction between tested behavior and remaining checks. Consult [Xerox's official downloads](https://www.support.xerox.com/en-us/product/phaser-6010/downloads) for vendor support.
 
-**Only the Xerox Phaser 6010N connected by Ethernet is supported.** The Mac can use Wi-Fi on the same local network. USB, Intel Macs and other printer models are outside this release's support. Physical iPhone printing was confirmed with 1.2.1; the new background lifecycle in 1.3.0 needs installation acceptance. See below.
+**Only the Xerox Phaser 6010N connected by Ethernet is supported.** The Mac can use Wi-Fi on the same local network. USB, Intel Macs and other printer models are outside this release's support. With 1.3.0, the owner confirmed iPhone discovery and physical printing while the Mac is locked. Closing the MacBook lid interrupted sharing in the tested setup. See below.
 
 ## Install and print
 
@@ -49,9 +49,9 @@ Real captures of version 1.1.0 installed on the test Mac, using the English inte
 
 **AirPrint — sharing with iPhone and iPad**
 
-![AirPrint enable control and iPhone instructions, before version 1.3.0](docs/screenshots/airprint.png)
+![AirPrint enabled in version 1.3.0](docs/screenshots/airprint.png)
 
-This additional capture predates 1.3.0: its instructions to keep the app open and its pending iOS test message are historical. In 1.3.0 the background service allows closing the app; physical iPhone printing was confirmed with 1.2.1.
+Original capture of version 1.3.0 with AirPrint enabled, supplied by the owner. iPhone discovery and physical printing were confirmed with the Mac locked; closing the MacBook lid interrupted sharing in the tested setup.
 
 The IP address, toner levels and calibration values belong to the test setup; they are not settings to copy. See [image details](docs/screenshots/README.md).
 
@@ -113,4 +113,4 @@ Thanks to the upstream foo2hbpl1/foo2zjs contributors, Ghostscript contributors 
 
 ## Detailed code review
 
-The [19 October review](docs/REVIEW-2026-10-19.md) records confirmed defects, fixes, benchmarks and remaining acceptance work. The 1.3.0 background service and new copy/media paths need physical acceptance after installation.
+The [19 October review](docs/REVIEW-2026-10-19.md) records confirmed defects, fixes, benchmarks and remaining acceptance work. The owner confirmed iPhone discovery and printing with the Mac locked on 1.3.0. App-closed operation, login restart and new copy/media combinations still require separate acceptance.
