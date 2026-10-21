@@ -1,5 +1,7 @@
 # Xerox Phaser 6010N for macOS
 
+Made by [Logical Flow](https://www.logicalflow.it/en/).
+
 [Italiano](README.it.md) · [Download the installer](https://github.com/antoniopisarra/xerox-phaser-6010-macos/releases/latest)
 
 <img src="app/Resources/AppIcon.png" width="110" alt="Phaser 6010N setup icon">
